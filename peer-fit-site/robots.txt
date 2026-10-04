@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /app-redirect.html
+
+Sitemap: https://www.peer-fit.com/sitemap.xml
