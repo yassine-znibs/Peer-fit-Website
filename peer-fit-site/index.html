@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peer Fit</title>
+<meta name="description" content="Peer Fit: plan less, play more. Create and join sports events and communities near you. Free on iPhone and Android.">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Chakra+Petch:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one dark column; real app screens in phone frames carry the story; pitch line art behind the hero */
+  :root {
+    /* Light: warm off-white like the Instagram posts */
+    --bg: #FBF7F4;
+    --surface: #FFFFFF;
+    --line: #EADFD8;
+    --text: #15110F;
+    --muted: #645B55;
+    --accent: #DF4F1C;       /* pitch deck orange, used everywhere */
+    --on-accent: #15110F;    /* dark text on orange (5.3:1) */
+    --accent-ink: #DF4F1C;
+    /* small orange labels: on light backgrounds they become orange tags with dark text */
+    --label-fg: #15110F; --label-bg: #DF4F1C; --label-pad: 4px 9px;
+    --display: Orbitron, "Arial Black", sans-serif;
+    --body: "Chakra Petch", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #050505; --surface: #0f0f0f; --line: #1e1e1e; --text: #f5f5f5; --muted: #8e8e8e; --accent-ink: #DF4F1C; --label-fg: #DF4F1C; --label-bg: transparent; --label-pad: 0; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #050505; --surface: #0f0f0f; --line: #1e1e1e; --text: #f5f5f5; --muted: #8e8e8e; --accent-ink: #DF4F1C; --label-fg: #DF4F1C; --label-bg: transparent; --label-pad: 0; color-scheme: dark; }
+  /* Brand bands stay black in both themes */
+  .hero, .ticker, .final, footer, .dl-bar { --bg: #050505; --surface: #0f0f0f; --line: #1e1e1e; --text: #f5f5f5; --muted: #8e8e8e; --accent-ink: #DF4F1C; --label-fg: #DF4F1C; --label-bg: transparent; --label-pad: 0; background: var(--bg); color: var(--text); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 17px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; }
+  h1, h2, h3, h4, .label { font-family: var(--display); text-transform: uppercase; letter-spacing: .5px; text-wrap: balance; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding-inline: 20px; }
+  .accent { color: var(--accent-ink); }
+  .label { display: inline-block; font-size: 13px; letter-spacing: 2.5px; color: var(--label-fg); background: var(--label-bg); padding: var(--label-pad); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px;
+    font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+    background: var(--accent); color: var(--on-accent); border: 2px solid var(--accent);
+    padding: 14px 28px; white-space: nowrap; transition: background .15s, color .15s, border-color .15s;
+  }
+  .btn:hover { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .btn:focus-visible, a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  .btn.ghost { background: transparent; border-color: var(--line); color: var(--text); }
+  .btn.ghost:hover { border-color: var(--text); }
+  .btn.small { padding: 10px 18px; font-size: 11px; min-height: 44px; }
+  .btn .ico { width: 18px; height: 18px; flex-shrink: 0; }
+  .btn.big { font-size: 16px; padding: 20px 40px; min-height: 64px; box-shadow: 0 0 0 6px rgba(223,79,28,.18), 0 18px 50px -12px rgba(223,79,28,.7); }
+  .btn.big .ico { width: 22px; height: 22px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn.big { animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 12px rgba(223,79,28,.08), 0 18px 50px -12px rgba(223,79,28,.7); } }
+  }
+  .section-cta { margin-top: 52px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 28px; border: 1px solid var(--accent); background: var(--surface); }
+  .section-cta p { color: var(--text); font-family: var(--display); text-transform: uppercase; font-size: 15px; letter-spacing: .5px; flex: 1; min-width: 220px; }
+  .free { color: var(--muted); font-size: 14px; }
+
+  /* Download bar that stays on screen while scrolling */
+  .dl-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background-color: rgba(5,5,5,.94); backdrop-filter: blur(8px); border-top: 1px solid var(--accent); padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateY(110%); transition: transform .3s ease; }
+  .dl-bar.show { transform: none; }
+  .dl-bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-inline: 0; }
+  .dl-bar img { height: 34px; width: auto; }
+  .dl-bar p { color: var(--muted); font-size: 15px; flex: 1; }
+  .dl-bar .btn { min-height: 52px; font-size: 14px; }
+  @media (max-width: 600px) { .dl-bar img, .dl-bar p { display: none; } .dl-bar .btn { width: 100%; } }
+
+  /* Phone frame around real app screens */
+  .phone { width: 100%; max-width: 260px; border: 7px solid #1a1a1a; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 30px 80px -30px rgba(223,79,28,.35); }
+  .phone img { display: block; width: 100%; height: auto; }
+
+  /* Nav */
+  nav { display: flex; align-items: center; justify-content: space-between; padding-block: 22px; position: relative; z-index: 2; }
+  nav > a:first-child { display: flex; align-items: center; min-height: 48px; }
+  nav img { height: 42px; width: auto; display: block; }
+  .nav-links { display: flex; align-items: center; gap: 28px; font-size: 15px; color: var(--muted); }
+  .nav-links a:not(.btn):hover { color: var(--text); }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .pitch { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .pitch * { fill: none; stroke: var(--line); stroke-width: 2; }
+  .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: center; padding-block: 50px 80px; }
+  .hero h1 { font-size: clamp(34px, 6vw, 80px); font-weight: 900; line-height: .98; margin: 18px 0 26px; }
+  .hero p { color: var(--muted); font-size: clamp(17px, 2vw, 20px); max-width: 520px; margin-bottom: 34px; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .platforms { margin-top: 18px; font-size: 15px; color: var(--muted); }
+  .platforms a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+  .platforms a:hover { color: var(--accent-ink); }
+  .hero .phone { justify-self: center; max-width: 290px; transform: rotate(3deg); }
+
+  /* Sports ticker */
+  .ticker { border-bottom: 1px solid var(--line); overflow: hidden; padding-block: 18px; }
+  .ticker-track { display: flex; gap: 44px; width: max-content; animation: slide 60s linear infinite; }
+  .ticker span { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 44px; white-space: nowrap; }
+  .ticker span::after { content: ""; width: 6px; height: 6px; background: var(--accent); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+  /* Sections */
+  section { padding-block: 100px; border-bottom: 1px solid var(--line); }
+  .head { margin-bottom: 48px; max-width: 660px; }
+  .head h2 { font-size: clamp(28px, 4.5vw, 46px); line-height: 1.05; margin-top: 12px; }
+  .head p { color: var(--muted); margin-top: 14px; }
+
+  /* Plan less / play more */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .compare img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
+  .vs { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 8px; }
+  .vs div { background: var(--bg); padding: 22px 24px; }
+  .vs h3 { font-size: 13px; letter-spacing: 2px; margin-bottom: 6px; }
+  .vs .without h3 { color: var(--muted); }
+  .vs .with h3 { display: inline-block; color: var(--label-fg); background: var(--label-bg); padding: var(--label-pad); }
+  .vs p { color: var(--muted); }
+  .vs .with p { color: var(--text); }
+
+  /* Step strips with screens */
+  .steps { display: grid; gap: 28px; }
+  .steps.four { grid-template-columns: repeat(4, 1fr); }
+  .steps.three { grid-template-columns: repeat(3, 1fr); row-gap: 56px; }
+  .step { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .step .phone { max-width: 240px; box-shadow: 0 20px 50px -28px rgba(0,0,0,.45); }
+  .step-num { display: inline-block; font-family: var(--display); font-weight: 900; font-size: 13px; letter-spacing: 2px; color: var(--label-fg); background: var(--label-bg); padding: var(--label-pad); }
+  .step h3 { font-size: 17px; margin: 4px 0 6px; }
+  .step p { color: var(--muted); font-size: 15px; }
+
+  /* Sports list */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { border: 1px solid var(--line); padding: 9px 16px; font-size: 15px; background: var(--surface); }
+  .chip.more { border-color: var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 600; }
+  .note { color: var(--muted); font-size: 15px; margin-top: 22px; }
+
+
+  /* Download */
+  .final { text-align: center; padding-block: 120px; border-bottom: 0; }
+  .final .label + h2 { margin-top: 16px; }
+  .final h2 { font-size: clamp(36px, 7vw, 84px); font-weight: 900; line-height: 1; margin: 16px 0 22px; }
+  .final p { color: var(--muted); margin-bottom: 34px; }
+  .stores { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .stores.left { justify-content: flex-start; }
+  .store { display: flex; align-items: center; gap: 12px; min-width: 200px; min-height: 60px; padding: 10px 20px; background: var(--text); color: var(--bg); border: 2px solid var(--text); transition: background .15s, color .15s, border-color .15s; }
+  .store:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .store .ico { width: 28px; height: 28px; fill: currentColor; flex-shrink: 0; }
+  .store span { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+  .store small { font-size: 12px; opacity: .8; }
+  .store b { font-family: var(--display); font-size: 17px; letter-spacing: .5px; }
+  .qr { margin: 40px auto 0; display: flex; align-items: center; justify-content: center; gap: 18px; color: var(--muted); font-size: 15px; text-align: left; }
+  .qr-code { background: #fff; padding: 10px; width: 132px; height: 132px; }
+  .qr-code img { display: block; width: 112px; height: 112px; image-rendering: pixelated; }
+
+  footer { padding-bottom: 110px; }
+  footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  footer img { height: 30px; width: auto; }
+
+  @media (max-width: 960px) {
+    .nav-links a:not(.btn) { display: none; }
+    .hero-grid, .compare { grid-template-columns: 1fr; }
+    .hero .phone { max-width: 240px; }
+    section { padding-block: 72px; }
+    /* Screens become a swipeable strip */
+    .steps.four, .steps.three { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; padding-bottom: 12px; }
+    .step { flex: 0 0 230px; scroll-snap-align: start; }
+    .swipe-hint { display: block; }
+  }
+  .swipe-hint { display: none; color: var(--muted); font-size: 14px; margin: -28px 0 20px; }
+  @media (max-width: 600px) { .qr { display: none; } }
+  @media (max-width: 520px) {
+    .ctas .btn { width: 100%; }
+    .btn.big { font-size: 15px; letter-spacing: 1px; padding: 18px 20px; }
+    .step p, .note { font-size: 16px; }
+    .section-cta { padding: 22px; }
+    .section-cta .btn { width: 100%; }
+    .store { flex: 1 1 200px; }
+  }
+  @media (max-width: 400px) {
+    nav .btn { padding: 10px 14px; font-size: 12px; letter-spacing: 1px; min-height: 44px; }
+    nav img { height: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <!-- Football pitch line art -->
+  <svg class="pitch" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect x="40" y="40" width="1120" height="620"/>
+    <line x1="600" y1="40" x2="600" y2="660"/>
+    <circle cx="600" cy="350" r="95"/>
+    <rect x="40" y="200" width="170" height="300"/>
+    <rect x="40" y="275" width="60" height="150"/>
+    <rect x="990" y="200" width="170" height="300"/>
+    <rect x="1100" y="275" width="60" height="150"/>
+    <path d="M210 290 A70 70 0 0 1 210 410"/>
+    <path d="M990 290 A70 70 0 0 0 990 410"/>
+  </svg>
+  <div class="wrap">
+    <nav>
+      <a href="#" aria-label="Peer Fit home"><img src="logo.png" alt="Peer Fit" width="80" height="42"></a>
+      <div class="nav-links">
+        <a href="#join">Join a game</a>
+        <a href="#create">Create an event</a>
+        <a href="#sports">Sports</a>
+        <a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
+      </div>
+    </nav>
+    <div class="hero-grid">
+      <div>
+        <div class="label">The app for team sports</div>
+        <h1>Plan less.<br><span class="accent">Play more.</span></h1>
+        <p>Find a game near you, or create your own in a few taps. Peer Fit fills the spots, so you can stop chasing people in group chats.</p>
+        <div class="ctas">
+          <a class="btn big" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
+          <a class="btn ghost" href="#join">See how it works</a>
+        </div>
+        <p class="free" style="margin-top:16px">Free on iPhone and Android</p>
+      </div>
+      <div class="phone"><img src="screens/discover.jpg" alt="The Discover screen in Peer Fit, showing filters, sports and a football match with a Join button" width="480" height="1000"></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Football</span><span>Basketball</span><span>Running</span><span>Cycling</span><span>Boxing</span><span>Climbing</span><span>Badminton</span><span>Crossfit</span><span>Handball</span><span>Hiking</span><span>Golf</span><span>Jiu-Jitsu</span>
+    <span>Football</span><span>Basketball</span><span>Running</span><span>Cycling</span><span>Boxing</span><span>Climbing</span><span>Badminton</span><span>Crossfit</span><span>Handball</span><span>Hiking</span><span>Golf</span><span>Jiu-Jitsu</span>
+  </div>
+</div>
+
+<main>
+  <section>
+    <div class="wrap compare">
+      <img src="screens/plan-less.jpg" alt="Without Peer Fit, an organiser juggles calls, notes and group chats. With Peer Fit, he gets a notification that all members signed up to his event." width="900" height="900" loading="lazy">
+      <div>
+        <div class="head" style="margin-bottom:28px">
+          <div class="label">Why Peer Fit</div>
+          <h2>Stop organising. Start playing.</h2>
+        </div>
+        <div class="vs">
+          <div class="without"><h3>Without Peer Fit</h3><p>Endless group chats, "who's in?", last-minute dropouts and a game that never happens.</p></div>
+          <div class="with"><h3>With Peer Fit</h3><p>One event, everyone signs up, and you get a notification when your team is complete.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join">
+    <div class="wrap">
+      <div class="head">
+        <div class="label">Join a game</div>
+        <h2>Find a game in 4 steps</h2>
+        <p>See what's being played near you, check the details, and reserve your place.</p>
+      </div>
+      <p class="swipe-hint">Swipe to see every step →</p>
+      <div class="steps four">
+        <div class="step">
+          <div class="phone"><img src="screens/discover.jpg" alt="Discover screen" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 1</div><h3>Open Discover</h3><p>Tap Discover in the bottom menu. You can also search by event or location.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/filter.jpg" alt="Filters for level, date and sport" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 2</div><h3>Filter your search</h3><p>Choose your level, the date and the sport.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/details.jpg" alt="Event details with date, duration, map, intensity and capacity" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 3</div><h3>Check the details</h3><p>Date, duration, level, intensity and places left. Tap the address for directions.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/join.jpg" alt="The Join button on an event" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 4</div><h3>Join</h3><p>Tap Join to reserve your place. Your next session starts here.</p></div>
+        </div>
+      </div>
+      <div class="section-cta"><p>Ready to play? Find a game near you.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
+    </div>
+  </section>
+
+  <section id="create">
+    <div class="wrap">
+      <div class="head">
+        <div class="label">Create an event</div>
+        <h2>Host your own game</h2>
+        <p>Set it up once and let players come to you.</p>
+      </div>
+      <p class="swipe-hint">Swipe to see every step →</p>
+      <div class="steps three">
+        <div class="step">
+          <div class="phone"><img src="screens/my-events.jpg" alt="My Events screen with the + button" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 1</div><h3>Open My Events</h3><p>Tap My Events, then the + button.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/basics.jpg" alt="Event basics: title, sport and skill level" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 2</div><h3>Add the basics</h3><p>Give your event a clear title, choose the sport and the skill level.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/sport.jpg" alt="Sport list with search and custom sport" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 3</div><h3>Choose the sport</h3><p>Search the list, or add a custom sport if yours isn't there.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/event-details.jpg" alt="Max participants, intensity, equipment, private event and price" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 4</div><h3>Set the details</h3><p>Max players and intensity. Free or paid, open or private.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/publish.jpg" alt="Review screen with the Publish event button" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 5</div><h3>Review &amp; publish</h3><p>Check every detail, then tap Publish event.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/manage.jpg" alt="Created event with Chat and Manage buttons" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Step 6</div><h3>Manage your event</h3><p>Find it under Created. Chat with players or update the event.</p></div>
+        </div>
+      </div>
+      <div class="section-cta"><p>Host your first game today.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
+    </div>
+  </section>
+
+  <section id="sports">
+    <div class="wrap">
+      <div class="head">
+        <div class="label">Sports</div>
+        <h2>Every sport. Every level.</h2>
+        <p>From football to jiu-jitsu, beginner to advanced.</p>
+      </div>
+      <div class="chips">
+        <span class="chip">Aerobics</span><span class="chip">American Football</span><span class="chip">Badminton</span><span class="chip">Barre</span><span class="chip">Baseball</span><span class="chip">Basketball</span><span class="chip">Bodybuilding</span><span class="chip">Bootcamp</span><span class="chip">Bouldering</span><span class="chip">Boxing</span><span class="chip">Calisthenics</span><span class="chip">Canoeing</span><span class="chip">Climbing</span><span class="chip">Cricket</span><span class="chip">Cross-Country Skiing</span><span class="chip">Crossfit</span><span class="chip">Cycling</span><span class="chip">Dance</span><span class="chip">Duathlon</span><span class="chip">Fencing</span><span class="chip">Football</span><span class="chip">Frisbee</span><span class="chip">Functional Training</span><span class="chip">Golf</span><span class="chip">Handball</span><span class="chip">HIIT</span><span class="chip">Hiking</span><span class="chip">Ice Skating</span><span class="chip">Jiu-Jitsu</span><span class="chip">Judo</span><span class="chip more">+ many more</span>
+      </div>
+      <p class="note">Can't find yours? Add a custom sport when you create an event.</p>
+      <div class="section-cta"><p>Your sport is waiting.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
+    </div>
+  </section>
+
+  <section id="communities">
+    <div class="wrap">
+      <div class="head">
+        <div class="label">Communities</div>
+        <h2>Find your crew. Or start one.</h2>
+        <p>Join a community for your sport and city, or start one for your team, your run club or your campus.</p>
+      </div>
+      <p class="swipe-hint">Swipe to see every screen →</p>
+      <div class="steps three">
+        <div class="step">
+          <div class="phone"><img src="screens/communities.jpg" alt="Communities list with members, points and city for each community" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Discover</div><h3>Find a community</h3><p>Browse communities near you or search by name. Each one shows its members, points and city.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/community.jpg" alt="A hiking community page with members, points, events and a Create Community Event button" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Join</div><h3>Become a member</h3><p>Join in one tap, see upcoming events, and create events for the whole community.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><img src="screens/community-chat.jpg" alt="Community chat with messages and a poll for the next hiking destination" width="480" height="1000" loading="lazy"></div>
+          <div><div class="step-num">Chat</div><h3>Plan together</h3><p>Chat with members and run polls, like where to hike next.</p></div>
+        </div>
+      </div>
+      <p class="note">Start your own community with the + button. Communities earn points and climb the leaderboard as they play.</p>
+      <div class="section-cta"><p>Find your crew today.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
+    </div>
+  </section>
+
+  <section class="final" id="download">
+    <div class="wrap">
+      <div class="label">Connect · Play · Grow</div>
+      <h2>Find your <span class="accent">peer.</span></h2>
+      <p>Your next game is nearby. Download Peer Fit free.</p>
+      <div class="stores">
+        <a class="store" href="https://apps.apple.com/us/app/peer-fit/id6754720762"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.59 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21z"/></svg><span><small>Download on the</small><b>App Store</b></span></a>
+        <a class="store" href="https://play.google.com/store/apps/details?id=com.abdel25.peerfit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.2.2-.3.6-.3 1v17.6c0 .4.1.8.3 1L13.5 12 3.6 2.2zm10.8 10.7 2.7 2.7-11.4 6.6 8.7-9.3zm3.9-3.8L20.8 10.5c.8.5.8 1.6 0 2.1l-2.5 1.4-3-3 3-1.9zM5.7 1.8l11.4 6.6-2.7 2.7-8.7-9.3z"/></svg><span><small>Get it on</small><b>Google Play</b></span></a>
+      </div>
+      <div class="qr" id="qr" hidden>
+        <div class="qr-code" id="qr-code"></div>
+        <span>On a computer?<br>Scan with your phone camera<br>to get the app.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="dl-bar" id="dl-bar" aria-hidden="true">
+  <div class="wrap">
+    <img src="logo.png" alt="" width="65" height="34">
+    <p>Free on iPhone and Android</p>
+    <a class="btn" href="#" data-download tabindex="-1"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <img src="logo.png" alt="Peer Fit" width="57" height="30">
+    <span>© <span id="yr"></span> Peer Fit</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+  // Phones go to the redirect page, which opens the right store.
+  // Computers go to the download section, which shows both stores and a QR code.
+  const DOWNLOAD_URL = "https://www.peer-fit.com/app-redirect.html";
+  const ua = navigator.userAgent || "";
+  const isPhone = /android|iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  document.querySelectorAll("[data-download]").forEach(a => { a.href = isPhone ? DOWNLOAD_URL : "#download"; });
+
+  if (!isPhone && window.qrcode) {
+    const qr = qrcode(0, "M");
+    qr.addData(DOWNLOAD_URL);
+    qr.make();
+    document.getElementById("qr-code").innerHTML = qr.createImgTag(4, 0, "QR code to download Peer Fit");
+    document.getElementById("qr").hidden = false;
+  }
+  const bar = document.getElementById("dl-bar");
+  let pastHero = false, atDownload = false;
+  const update = () => {
+    const on = pastHero && !atDownload;
+    bar.classList.toggle("show", on);
+    bar.setAttribute("aria-hidden", String(!on));
+    bar.querySelector("a").tabIndex = on ? 0 : -1;
+  };
+  new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; update(); }).observe(document.querySelector(".hero"));
+  new IntersectionObserver(([e]) => { atDownload = e.isIntersecting; update(); }).observe(document.getElementById("download"));
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

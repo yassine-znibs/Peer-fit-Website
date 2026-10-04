@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloading PeerFit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --pf-bg: #050505;
+            --pf-card: rgba(12, 12, 12, 0.85);
+            --pf-border: rgba(255, 255, 255, 0.1);
+            --pf-text: #f5f4f1;
+            --pf-muted: rgba(245, 244, 241, 0.7);
+            --pf-accent: #DF4F1C;
+            --pf-accent-secondary: #f8c572;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--pf-bg);
+            color: var(--pf-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(180deg, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0.95) 40%, rgba(5,5,5,0.98) 100%);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            inset: 20% auto -30% -10%;
+            width: 360px;
+            height: 360px;
+            background: radial-gradient(circle, rgba(223,79,28,0.45) 0%, rgba(223,79,28,0) 70%);
+            filter: blur(12px);
+            pointer-events: none;
+        }
+
+        .redirect-shell {
+            position: relative;
+            width: min(520px, 100%);
+        }
+
+        .redirect-card {
+            position: relative;
+            z-index: 1;
+            background: var(--pf-card);
+            border: 1px solid var(--pf-border);
+            border-radius: 32px;
+            padding: 48px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(22px);
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: 1px solid var(--pf-border);
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 28px;
+        }
+
+        .brand-mark img {
+            width: 42px;
+            height: 42px;
+        }
+
+        .brand-mark span {
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.4em;
+            color: var(--pf-muted);
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: clamp(1.9rem, 5vw, 2.5rem);
+            margin: 0 0 16px;
+            line-height: 1.2;
+        }
+
+        .lead {
+            font-size: 1.05rem;
+            color: var(--pf-muted);
+            margin: 0 auto 32px;
+            max-width: 420px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--pf-accent-secondary);
+            border-right-color: var(--pf-accent);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status span {
+            font-weight: 500;
+            color: var(--pf-muted);
+        }
+
+        .store-buttons {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 999px;
+            padding: 14px 22px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid transparent;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn svg { width: 24px; height: 24px; fill: currentColor; flex-shrink: 0; }
+
+        .btn span {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(245, 244, 241, 0.8);
+        }
+
+        .btn strong {
+            font-size: 1rem;
+            color: var(--pf-text);
+        }
+
+        .btn-primary {
+            background: rgba(223, 79, 28, 0.95);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-secondary {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .manual-links p {
+            font-size: 0.9rem;
+            color: var(--pf-muted);
+            margin-bottom: 12px;
+        }
+
+        .note {
+            font-size: 0.85rem;
+            color: rgba(245, 244, 241, 0.65);
+        }
+
+        .note a {
+            color: var(--pf-accent-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        @media (min-width: 520px) {
+            .store-buttons {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            .redirect-card {
+                padding: 40px 26px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .spinner { animation: none; }
+            .btn { transition: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-shell">
+        <div class="redirect-card">
+            <div class="brand-mark">
+                
+                <span>PeerFit</span>
+            </div>
+            <p class="eyebrow">One tap away</p>
+            <h1>Opening PeerFit in your app store</h1>
+            <p class="lead" id="smart-copy">We're figuring out which store your device uses. Hang tight—we'll launch the right one in a second.</p>
+
+            <div class="status">
+                <div class="spinner" role="status" aria-live="polite" aria-label="Loading"></div>
+                <span id="status-text">Detecting your device's best download option…</span>
+            </div>
+
+            <div class="store-buttons">
+                <a href="https://apps.apple.com/us/app/peer-fit/id6754720762" class="btn btn-primary" id="ios-link">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.59 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21z"/></svg>
+                    <div>
+                        <span>Download on the</span>
+                        <strong>App Store</strong>
+                    </div>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.abdel25.peerfit&hl=en" class="btn btn-secondary" id="android-link">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.2.2-.3.6-.3 1v17.6c0 .4.1.8.3 1L13.5 12 3.6 2.2zm10.8 10.7 2.7 2.7-11.4 6.6 8.7-9.3zm3.9-3.8L20.8 10.5c.8.5.8 1.6 0 2.1l-2.5 1.4-3-3 3-1.9zM5.7 1.8l11.4 6.6-2.7 2.7-8.7-9.3z"/></svg>
+                    <div>
+                        <span>Get it on</span>
+                        <strong>Google Play</strong>
+                    </div>
+                </a>
+            </div>
+
+            <div class="manual-links">
+                <p>Didn't redirect automatically? Tap one of the buttons above.</p>
+            </div>
+
+            <p class="note">Need help? <a href="mailto:support@peerfit.ma">Contact support</a></p>
+        </div>
+    </div>
+
+    <script>
+        // App Store URLs
+        const IOS_URL = 'https://apps.apple.com/us/app/peer-fit/id6754720762';
+        const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.abdel25.peerfit&hl=en';
+        
+        // Detect device type
+        function detectDevice() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            
+            // iOS detection
+            // iPads on iPadOS 13+ report as a Mac with touch
+            if ((/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) || (/Macintosh/.test(userAgent) && navigator.maxTouchPoints > 1)) {
+                return 'ios';
+            }
+            
+            // Android detection
+            if (/android/i.test(userAgent)) {
+                return 'android';
+            }
+            
+            // Default to Android for unknown devices (or you can choose iOS)
+            return 'android';
+        }
+
+        // Perform redirect
+        function redirect() {
+            const device = detectDevice();
+            const url = device === 'ios' ? IOS_URL : ANDROID_URL;
+            const smartCopy = document.getElementById('smart-copy');
+            const statusText = document.getElementById('status-text');
+
+            smartCopy.textContent = device === 'ios'
+                ? 'Great news—we detected iOS, so we\'re opening the App Store for you.'
+                : 'Looks like you\'re on Android—opening Google Play in just a moment.';
+
+            statusText.textContent = device === 'ios'
+                ? 'Launching the App Store…'
+                : 'Launching Google Play…';
+
+            window.location.href = url;
+        }
+
+        // Execute redirect after a short delay
+        setTimeout(redirect, 1100);
+    </script>
+</body>
+</html>
