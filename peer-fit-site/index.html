@@ -58,6 +58,8 @@
     --accent: #DF4F1C;       /* pitch deck orange, used everywhere */
     --on-accent: #15110F;    /* dark text on orange (5.3:1) */
     --accent-ink: #DF4F1C;
+    --accent-glow: rgba(223,79,28,.18); /* #DF4F1C at low opacity, for glows */
+    --accent-glow-strong: rgba(223,79,28,.7);
     /* small orange labels: on light backgrounds they become orange tags with dark text */
     --label-fg: #15110F; --label-bg: #DF4F1C; --label-pad: 4px 9px;
     --display: Orbitron, "Arial Black", sans-serif;
@@ -88,15 +90,14 @@
   }
   .btn:hover { background: var(--text); border-color: var(--text); color: var(--bg); }
   .btn:focus-visible, a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
-  .btn.ghost { background: transparent; border-color: var(--line); color: var(--text); }
+  .btn.ghost { background: transparent; border-color: var(--muted); color: var(--text); }
   .btn.ghost:hover { border-color: var(--text); }
-  .btn.small { padding: 10px 18px; font-size: 11px; min-height: 44px; }
   .btn .ico { width: 18px; height: 18px; flex-shrink: 0; }
-  .btn.big { font-size: 16px; padding: 20px 40px; min-height: 64px; box-shadow: 0 0 0 6px rgba(223,79,28,.18), 0 18px 50px -12px rgba(223,79,28,.7); }
+  .btn.big { font-size: 16px; padding: 20px 40px; min-height: 64px; box-shadow: 0 0 0 6px var(--accent-glow), 0 18px 50px -12px var(--accent-glow-strong); }
   .btn.big .ico { width: 22px; height: 22px; }
   @media (prefers-reduced-motion: no-preference) {
-    .btn.big { animation: pulse 2.4s ease-in-out infinite; }
-    @keyframes pulse { 50% { box-shadow: 0 0 0 12px rgba(223,79,28,.08), 0 18px 50px -12px rgba(223,79,28,.7); } }
+    .btn.big { animation: pulse 2.4s ease-in-out 1s 3; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 12px transparent, 0 18px 50px -12px var(--accent-glow-strong); } }
   }
   .section-cta { margin-top: 52px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 28px; border: 1px solid var(--accent); background: var(--surface); }
   .section-cta p { color: var(--text); font-family: var(--display); text-transform: uppercase; font-size: 15px; letter-spacing: .5px; flex: 1; min-width: 220px; }
@@ -112,7 +113,7 @@
   @media (max-width: 600px) { .dl-bar img, .dl-bar p { display: none; } .dl-bar .btn { width: 100%; } }
 
   /* Phone frame around real app screens */
-  .phone { width: 100%; max-width: 260px; border: 7px solid #1a1a1a; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 30px 80px -30px rgba(223,79,28,.35); }
+  .phone { width: 100%; max-width: 260px; border: 7px solid #1a1a1a; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 30px 80px -30px var(--accent-glow-strong); }
   .phone img { display: block; width: 100%; height: auto; }
 
   /* Nav */
@@ -130,14 +131,12 @@
   .hero h1 { font-size: clamp(34px, 6vw, 80px); font-weight: 900; line-height: .98; margin: 18px 0 26px; }
   .hero p { color: var(--muted); font-size: clamp(17px, 2vw, 20px); max-width: 520px; margin-bottom: 34px; }
   .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-  .platforms { margin-top: 18px; font-size: 15px; color: var(--muted); }
-  .platforms a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
-  .platforms a:hover { color: var(--accent-ink); }
   .hero .phone { justify-self: center; max-width: 290px; transform: rotate(3deg); }
 
   /* Sports ticker */
   .ticker { border-bottom: 1px solid var(--line); overflow: hidden; padding-block: 18px; }
-  .ticker-track { display: flex; gap: 44px; width: max-content; animation: slide 60s linear infinite; }
+  .ticker-track { display: flex; gap: 44px; width: max-content; animation: slide 80s linear infinite; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
   .ticker span { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 44px; white-space: nowrap; }
   .ticker span::after { content: ""; width: 6px; height: 6px; background: var(--accent); }
   @keyframes slide { to { transform: translateX(-50%); } }
@@ -146,7 +145,7 @@
   /* Sections */
   section { padding-block: 100px; border-bottom: 1px solid var(--line); }
   .head { margin-bottom: 48px; max-width: 660px; }
-  .head h2 { font-size: clamp(28px, 4.5vw, 46px); line-height: 1.05; margin-top: 12px; }
+  .head h2 { font-size: clamp(28px, 4.5vw, 46px); line-height: 1.05; }
   .head p { color: var(--muted); margin-top: 14px; }
 
   /* Plan less / play more */
@@ -173,9 +172,8 @@
   /* Sports list */
   .chips { display: flex; flex-wrap: wrap; gap: 10px; }
   .chip { border: 1px solid var(--line); padding: 9px 16px; font-size: 15px; background: var(--surface); }
-  .chip.more { border-color: var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 600; }
+  .chip.more { border-style: dashed; background: transparent; color: var(--muted); }
   .note { color: var(--muted); font-size: 15px; margin-top: 22px; }
-
 
   /* Download */
   .final { text-align: center; padding-block: 120px; border-bottom: 0; }
@@ -183,7 +181,6 @@
   .final h2 { font-size: clamp(36px, 7vw, 84px); font-weight: 900; line-height: 1; margin: 16px 0 22px; }
   .final p { color: var(--muted); margin-bottom: 34px; }
   .stores { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-  .stores.left { justify-content: flex-start; }
   .store { display: flex; align-items: center; gap: 12px; min-width: 200px; min-height: 60px; padding: 10px 20px; background: var(--text); color: var(--bg); border: 2px solid var(--text); transition: background .15s, color .15s, border-color .15s; }
   .store:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .store .ico { width: 28px; height: 28px; fill: currentColor; flex-shrink: 0; }
@@ -194,7 +191,6 @@
   .qr-code { background: #fff; padding: 10px; width: 132px; height: 132px; }
   .qr-code img { display: block; width: 112px; height: 112px; image-rendering: pixelated; }
 
-  footer { padding-bottom: 110px; }
   footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: 14px; }
   footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
   footer img { height: 30px; width: auto; }
@@ -209,6 +205,13 @@
     .step { flex: 0 0 230px; scroll-snap-align: start; }
     .swipe-hint { display: block; }
   }
+  .steps:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+  picture { display: block; }
+  .skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--accent); color: var(--on-accent); padding: 12px 18px; font-weight: 600; }
+  .skip:focus { top: 12px; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .foot-links a { text-decoration: underline; text-underline-offset: 3px; padding-block: 12px; }
+  .foot-links a:hover { color: var(--text); }
   .swipe-hint { display: none; color: var(--muted); font-size: 14px; margin: -28px 0 20px; }
   @media (max-width: 600px) { .qr { display: none; } }
   @media (max-width: 520px) {
@@ -226,6 +229,7 @@
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="hero">
   <!-- Football pitch line art -->
@@ -252,7 +256,7 @@
     </nav>
     <div class="hero-grid">
       <div>
-        <div class="label">PeerFit · The app for team sports</div>
+        <div class="label">The app for team sports</div>
         <h1>Plan less.<br><span class="accent">Play more.</span></h1>
         <p>Find a game near you, or create your own in a few taps. PeerFit fills the spots, so you can stop chasing people in group chats.</p>
         <div class="ctas">
@@ -261,7 +265,7 @@
         </div>
         <p class="free" style="margin-top:16px">Free on iPhone and Android</p>
       </div>
-      <div class="phone"><img src="screens/discover.jpg" alt="The Discover screen in PeerFit, showing filters, sports and a football match with a Join button" width="480" height="1000"></div>
+      <div class="phone"><picture><source srcset="screens/discover.webp" type="image/webp"><img src="screens/discover.jpg" alt="The Discover screen in PeerFit, showing filters, sports and a football match with a Join button" width="480" height="1000" fetchpriority="high"></picture></div>
     </div>
   </div>
 </header>
@@ -273,14 +277,13 @@
   </div>
 </div>
 
-<main>
+<main id="main">
   <section>
     <div class="wrap compare">
-      <img src="screens/plan-less.jpg" alt="Without PeerFit, an organiser juggles calls, notes and group chats. With PeerFit, he gets a notification that all members signed up to his event." width="900" height="900" loading="lazy">
+      <picture><source srcset="screens/plan-less.webp" type="image/webp"><img src="screens/plan-less.jpg" alt="Without PeerFit, an organiser juggles calls, notes and group chats. With PeerFit, he gets a notification that all members signed up to his event." width="900" height="900" loading="lazy"></picture>
       <div>
         <div class="head" style="margin-bottom:28px">
-          <div class="label">Why PeerFit</div>
-          <h2>Stop organising. Start playing.</h2>
+          <h2 style="margin-top:0">Stop organising. Start playing.</h2>
         </div>
         <div class="vs">
           <div class="without"><h3>Without PeerFit</h3><p>Endless group chats, "who's in?", last-minute dropouts and a game that never happens.</p></div>
@@ -293,26 +296,25 @@
   <section id="join">
     <div class="wrap">
       <div class="head">
-        <div class="label">Join a game</div>
         <h2>Find a game in 4 steps</h2>
         <p>See what's being played near you, check the details, and reserve your place.</p>
       </div>
       <p class="swipe-hint">Swipe to see every step →</p>
-      <div class="steps four">
+      <div class="steps four" role="region" aria-label="Steps to find a game" tabindex="0">
         <div class="step">
-          <div class="phone"><img src="screens/discover.jpg" alt="Discover screen" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/discover.webp" type="image/webp"><img src="screens/discover.jpg" alt="Discover screen" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 1</div><h3>Open Discover</h3><p>Tap Discover in the bottom menu. You can also search by event or location.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/filter.jpg" alt="Filters for level, date and sport" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/filter.webp" type="image/webp"><img src="screens/filter.jpg" alt="Filters for level, date and sport" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 2</div><h3>Filter your search</h3><p>Choose your level, the date and the sport.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/details.jpg" alt="Event details with date, duration, map, intensity and capacity" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/details.webp" type="image/webp"><img src="screens/details.jpg" alt="Event details with date, duration, map, intensity and capacity" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 3</div><h3>Check the details</h3><p>Date, duration, level, intensity and places left. Tap the address for directions.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/join.jpg" alt="The Join button on an event" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/join.webp" type="image/webp"><img src="screens/join.jpg" alt="The Join button on an event" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 4</div><h3>Join</h3><p>Tap Join to reserve your place. Your next session starts here.</p></div>
         </div>
       </div>
@@ -323,34 +325,33 @@
   <section id="create">
     <div class="wrap">
       <div class="head">
-        <div class="label">Create an event</div>
         <h2>Host your own game</h2>
         <p>Set it up once and let players come to you.</p>
       </div>
       <p class="swipe-hint">Swipe to see every step →</p>
-      <div class="steps three">
+      <div class="steps three" role="region" aria-label="Steps to create an event" tabindex="0">
         <div class="step">
-          <div class="phone"><img src="screens/my-events.jpg" alt="My Events screen with the + button" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/my-events.webp" type="image/webp"><img src="screens/my-events.jpg" alt="My Events screen with the + button" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 1</div><h3>Open My Events</h3><p>Tap My Events, then the + button.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/basics.jpg" alt="Event basics: title, sport and skill level" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/basics.webp" type="image/webp"><img src="screens/basics.jpg" alt="Event basics: title, sport and skill level" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 2</div><h3>Add the basics</h3><p>Give your event a clear title, choose the sport and the skill level.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/sport.jpg" alt="Sport list with search and custom sport" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/sport.webp" type="image/webp"><img src="screens/sport.jpg" alt="Sport list with search and custom sport" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 3</div><h3>Choose the sport</h3><p>Search the list, or add a custom sport if yours isn't there.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/event-details.jpg" alt="Max participants, intensity, equipment, private event and price" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/event-details.webp" type="image/webp"><img src="screens/event-details.jpg" alt="Max participants, intensity, equipment, private event and price" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 4</div><h3>Set the details</h3><p>Max players and intensity. Free or paid, open or private.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/publish.jpg" alt="Review screen with the Publish event button" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/publish.webp" type="image/webp"><img src="screens/publish.jpg" alt="Review screen with the Publish event button" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 5</div><h3>Review &amp; publish</h3><p>Check every detail, then tap Publish event.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/manage.jpg" alt="Created event with Chat and Manage buttons" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/manage.webp" type="image/webp"><img src="screens/manage.jpg" alt="Created event with Chat and Manage buttons" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Step 6</div><h3>Manage your event</h3><p>Find it under Created. Chat with players or update the event.</p></div>
         </div>
       </div>
@@ -361,7 +362,6 @@
   <section id="sports">
     <div class="wrap">
       <div class="head">
-        <div class="label">Sports</div>
         <h2>Every sport. Every level.</h2>
         <p>From football to jiu-jitsu, beginner to advanced.</p>
       </div>
@@ -376,22 +376,21 @@
   <section id="communities">
     <div class="wrap">
       <div class="head">
-        <div class="label">Communities</div>
         <h2>Find your crew. Or start one.</h2>
         <p>Join a community for your sport and city, or start one for your team, your run club or your campus.</p>
       </div>
       <p class="swipe-hint">Swipe to see every screen →</p>
-      <div class="steps three">
+      <div class="steps three" role="region" aria-label="Community screens" tabindex="0">
         <div class="step">
-          <div class="phone"><img src="screens/communities.jpg" alt="Communities list with members, points and city for each community" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/communities.webp" type="image/webp"><img src="screens/communities.jpg" alt="Communities list with members, points and city for each community" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Discover</div><h3>Find a community</h3><p>Browse communities near you or search by name. Each one shows its members, points and city.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/community.jpg" alt="A hiking community page with members, points, events and a Create Community Event button" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/community.webp" type="image/webp"><img src="screens/community.jpg" alt="A hiking community page with members, points, events and a Create Community Event button" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Join</div><h3>Become a member</h3><p>Join in one tap, see upcoming events, and create events for the whole community.</p></div>
         </div>
         <div class="step">
-          <div class="phone"><img src="screens/community-chat.jpg" alt="Community chat with messages and a poll for the next hiking destination" width="480" height="1000" loading="lazy"></div>
+          <div class="phone"><picture><source srcset="screens/community-chat.webp" type="image/webp"><img src="screens/community-chat.jpg" alt="Community chat with messages and a poll for the next hiking destination" width="480" height="1000" loading="lazy"></picture></div>
           <div><div class="step-num">Chat</div><h3>Plan together</h3><p>Chat with members and run polls, like where to hike next.</p></div>
         </div>
       </div>
@@ -428,11 +427,15 @@
 <footer>
   <div class="wrap">
     <img src="logo.png" alt="PeerFit" width="57" height="30">
+    <div class="foot-links">
+      <a href="mailto:support@peerfit.ma">Support: support@peerfit.ma</a>
+      <a href="https://apps.apple.com/us/app/peer-fit/id6754720762">App Store</a>
+      <a href="https://play.google.com/store/apps/details?id=com.abdel25.peerfit">Google Play</a>
+    </div>
     <span>© <span id="yr"></span> PeerFit</span>
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
   // Phones go to the redirect page, which opens the right store.
   // Computers go to the download section, which shows both stores and a QR code.
@@ -441,12 +444,18 @@
   const isPhone = /android|iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
   document.querySelectorAll("[data-download]").forEach(a => { a.href = isPhone ? DOWNLOAD_URL : "#download"; });
 
-  if (!isPhone && window.qrcode) {
-    const qr = qrcode(0, "M");
-    qr.addData(DOWNLOAD_URL);
-    qr.make();
-    document.getElementById("qr-code").innerHTML = qr.createImgTag(4, 0, "QR code to download PeerFit");
-    document.getElementById("qr").hidden = false;
+  // QR code for computers only, so phones don't download the library
+  if (!isPhone) {
+    const lib = document.createElement("script");
+    lib.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
+    lib.onload = () => {
+      const qr = qrcode(0, "M");
+      qr.addData(DOWNLOAD_URL);
+      qr.make();
+      document.getElementById("qr-code").innerHTML = qr.createImgTag(4, 0, "QR code to download PeerFit");
+      document.getElementById("qr").hidden = false;
+    };
+    document.body.appendChild(lib);
   }
   const bar = document.getElementById("dl-bar");
   let pastHero = false, atDownload = false;
@@ -458,6 +467,17 @@
   };
   new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; update(); }).observe(document.querySelector(".hero"));
   new IntersectionObserver(([e]) => { atDownload = e.isIntersecting; update(); }).observe(document.getElementById("download"));
+
+  // Arrow keys move the screen strips one screen at a time (keyboard users can't swipe)
+  document.querySelectorAll(".steps").forEach(strip => {
+    strip.addEventListener("keydown", e => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      if (strip.scrollWidth <= strip.clientWidth) return;
+      e.preventDefault();
+      const step = strip.querySelector(".step").getBoundingClientRect().width + 20;
+      strip.scrollBy({ left: e.key === "ArrowRight" ? step : -step, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    });
+  });
 
   document.getElementById("yr").textContent = new Date().getFullYear();
 </script>
