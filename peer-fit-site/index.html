@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,6 +62,11 @@
     --accent-glow-strong: rgba(223,79,28,.7);
     /* small orange labels: on light backgrounds they become orange tags with dark text */
     --label-fg: #15110F; --label-bg: #DF4F1C; --label-pad: 4px 9px;
+    /* motion tokens */
+    --ease-out: cubic-bezier(.2,.8,.2,1);
+    --ease-in: cubic-bezier(.4,0,1,1);
+    --dur-enter: 600ms;
+    --dur-press: 120ms;
     --display: Orbitron, "Arial Black", sans-serif;
     --body: "Chakra Petch", system-ui, sans-serif;
     color-scheme: light;
@@ -152,7 +157,7 @@
   .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
   .compare img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
   .vs { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 8px; }
-  .vs div { background: var(--bg); padding: 22px 24px; }
+  .vs > div { background: var(--bg); padding: 22px 24px; }
   .vs h3 { font-size: 13px; letter-spacing: 2px; margin-bottom: 6px; }
   .vs .without h3 { color: var(--muted); }
   .vs .with h3 { display: inline-block; color: var(--label-fg); background: var(--label-bg); padding: var(--label-pad); }
@@ -174,6 +179,49 @@
   .chip { border: 1px solid var(--line); padding: 9px 16px; font-size: 15px; background: var(--surface); }
   .chip.more { border-style: dashed; background: transparent; color: var(--muted); }
   .note { color: var(--muted); font-size: 15px; margin-top: 22px; }
+
+  /* ---------- Motion ---------- */
+  a, button { -webkit-tap-highlight-color: transparent; }
+  /* Press feedback for touch and mouse */
+  .btn, .store, .dots button { transition: transform var(--dur-press) var(--ease-out), background .15s, color .15s, border-color .15s; }
+  .btn:active, .store:active { transform: scale(.97); }
+  .btn.big:active { transform: scale(.97); }
+  @media (hover: hover) {
+    .step .phone { transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out); }
+    .step:hover .phone { transform: translateY(-6px); box-shadow: 0 30px 60px -28px rgba(0,0,0,.5); }
+  }
+
+  /* Notification that shows what PeerFit does for organisers */
+  .notif { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 16px 40px -24px rgba(0,0,0,.45); max-width: 420px; }
+  .notif img { width: 40px; height: 40px; flex-shrink: 0; }
+  .notif b { display: block; font-family: var(--display); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+  .notif span { display: block; font-size: 15px; }
+  .notif time { margin-left: auto; align-self: flex-start; color: var(--muted); font-size: 13px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* 1. Page-load sequence: headline, then the phone settles into its tilt */
+    .hero .label, .hero h1, .hero-grid > div > p, .hero .ctas { animation: rise var(--dur-enter) var(--ease-out) both; }
+    .hero h1 { animation-delay: 80ms; }
+    .hero-grid > div > p:first-of-type { animation-delay: 160ms; }
+    .hero .ctas { animation-delay: 240ms; }
+    .hero-grid > div > p.free { animation-delay: 300ms; }
+    .hero .phone { animation: phone-in 900ms var(--ease-out) 250ms both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+    @keyframes phone-in { from { opacity: 0; transform: translateY(60px) rotate(0deg); } to { opacity: 1; transform: translateY(0) rotate(3deg); } }
+
+    /* 2 & 3. Scroll moments, only for content that starts below the fold */
+    .js .notif.pre { opacity: 0; transform: translateY(-14px) scale(.98); }
+    .js .notif { transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
+    .js .step.pre .phone { opacity: 0; transform: translateY(24px); }
+    .js .step .phone { transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
+  }
+
+  /* Position dots for the swipe strips (phones and tablets) */
+  .dots { display: none; justify-content: center; gap: 2px; margin-top: 8px; }
+  .dots button { width: 44px; height: 44px; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dots button::before { content: ""; width: 8px; height: 8px; background: var(--line); border: 1px solid var(--muted); transition: width 200ms var(--ease-out), background 200ms; }
+  .dots button[aria-current="true"]::before { width: 22px; background: var(--accent); border-color: var(--accent); }
+  .dots button:focus-visible { outline: 2px solid var(--accent); outline-offset: -6px; }
 
   /* Download */
   .final { text-align: center; padding-block: 120px; border-bottom: 0; }
@@ -199,11 +247,14 @@
     .nav-links a:not(.btn) { display: none; }
     .hero-grid, .compare { grid-template-columns: 1fr; }
     .hero .phone { max-width: 240px; }
-    section { padding-block: 72px; }
+    section { padding-block: 64px; }
+    .hero-grid { padding-block: 24px 56px; gap: 36px; }
     /* Screens become a swipeable strip */
-    .steps.four, .steps.three { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; padding-bottom: 12px; }
-    .step { flex: 0 0 230px; scroll-snap-align: start; }
-    .swipe-hint { display: block; }
+    .steps.four, .steps.three { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; padding-bottom: 12px; overscroll-behavior-x: contain; scrollbar-width: none; }
+    .steps::-webkit-scrollbar { display: none; }
+    .step { flex: 0 0 min(72vw, 280px); scroll-snap-align: start; }
+    .step .phone { max-width: 100%; }
+    .dots { display: flex; }
   }
   .steps:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
   picture { display: block; }
@@ -212,7 +263,6 @@
   .foot-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
   .foot-links a { text-decoration: underline; text-underline-offset: 3px; padding-block: 12px; }
   .foot-links a:hover { color: var(--text); }
-  .swipe-hint { display: none; color: var(--muted); font-size: 14px; margin: -28px 0 20px; }
   @media (max-width: 600px) { .qr { display: none; } }
   @media (max-width: 520px) {
     .ctas .btn { width: 100%; }
@@ -221,6 +271,10 @@
     .section-cta { padding: 22px; }
     .section-cta .btn { width: 100%; }
     .store { flex: 1 1 200px; }
+    .head { margin-bottom: 32px; }
+    .hero .phone { max-width: 230px; }
+    .final { padding-block: 88px; }
+    .notif { max-width: none; }
   }
   @media (max-width: 400px) {
     nav .btn { padding: 10px 14px; font-size: 12px; letter-spacing: 1px; min-height: 44px; }
@@ -287,7 +341,13 @@
         </div>
         <div class="vs">
           <div class="without"><h3>Without PeerFit</h3><p>Endless group chats, "who's in?", last-minute dropouts and a game that never happens.</p></div>
-          <div class="with"><h3>With PeerFit</h3><p>One event, everyone signs up, and you get a notification when your team is complete.</p></div>
+          <div class="with"><h3>With PeerFit</h3><p>One event, everyone signs up, and you get a notification when your team is complete.</p>
+            <div class="notif" role="img" aria-label="Example PeerFit notification: All members have signed up to your event">
+              <img src="favicon.png" alt="" width="40" height="40">
+              <div><b>PeerFit</b><span>All members have signed up to your event ✓</span></div>
+              <time>now</time>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -299,7 +359,6 @@
         <h2>Find a game in 4 steps</h2>
         <p>See what's being played near you, check the details, and reserve your place.</p>
       </div>
-      <p class="swipe-hint">Swipe to see every step →</p>
       <div class="steps four" role="region" aria-label="Steps to find a game" tabindex="0">
         <div class="step">
           <div class="phone"><picture><source srcset="screens/discover.webp" type="image/webp"><img src="screens/discover.jpg" alt="Discover screen" width="480" height="1000" loading="lazy"></picture></div>
@@ -328,7 +387,6 @@
         <h2>Host your own game</h2>
         <p>Set it up once and let players come to you.</p>
       </div>
-      <p class="swipe-hint">Swipe to see every step →</p>
       <div class="steps three" role="region" aria-label="Steps to create an event" tabindex="0">
         <div class="step">
           <div class="phone"><picture><source srcset="screens/my-events.webp" type="image/webp"><img src="screens/my-events.jpg" alt="My Events screen with the + button" width="480" height="1000" loading="lazy"></picture></div>
@@ -379,7 +437,6 @@
         <h2>Find your crew. Or start one.</h2>
         <p>Join a community for your sport and city, or start one for your team, your run club or your campus.</p>
       </div>
-      <p class="swipe-hint">Swipe to see every screen →</p>
       <div class="steps three" role="region" aria-label="Community screens" tabindex="0">
         <div class="step">
           <div class="phone"><picture><source srcset="screens/communities.webp" type="image/webp"><img src="screens/communities.jpg" alt="Communities list with members, points and city for each community" width="480" height="1000" loading="lazy"></picture></div>
@@ -477,6 +534,53 @@
       const step = strip.querySelector(".step").getBoundingClientRect().width + 20;
       strip.scrollBy({ left: e.key === "ArrowRight" ? step : -step, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     });
+  });
+
+  document.documentElement.classList.replace("no-js", "js");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Scroll moments: only hide things that start below the fold, so nothing flashes
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    const below = el => el.getBoundingClientRect().top > innerHeight;
+    const notif = document.querySelector(".notif");
+    if (below(notif)) {
+      notif.classList.add("pre");
+      new IntersectionObserver(([e], o) => {
+        if (e.isIntersecting) { setTimeout(() => notif.classList.remove("pre"), 350); o.disconnect(); }
+      }, { threshold: .6 }).observe(notif);
+    }
+    document.querySelectorAll(".steps").forEach(strip => {
+      if (!below(strip)) return;
+      const steps = [...strip.querySelectorAll(".step")];
+      steps.forEach(st => st.classList.add("pre"));
+      new IntersectionObserver(([e], o) => {
+        if (!e.isIntersecting) return;
+        steps.forEach((st, i) => setTimeout(() => st.classList.remove("pre"), i * 50));
+        o.disconnect();
+      }, { threshold: .2 }).observe(strip);
+    });
+  }
+
+  // Position dots under each swipe strip
+  document.querySelectorAll(".steps").forEach(strip => {
+    const steps = [...strip.querySelectorAll(".step")];
+    const dots = document.createElement("div");
+    dots.className = "dots";
+    steps.forEach((st, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", `Show screen ${i + 1} of ${steps.length}`);
+      b.addEventListener("click", () => strip.scrollTo({ left: st.offsetLeft - strip.offsetLeft, behavior: reduceMotion ? "auto" : "smooth" }));
+      dots.appendChild(b);
+    });
+    strip.after(dots);
+    const mark = () => {
+      const w = steps[0].getBoundingClientRect().width + 20;
+      const i = Math.min(steps.length - 1, Math.round(strip.scrollLeft / w));
+      dots.querySelectorAll("button").forEach((b, j) => b.setAttribute("aria-current", j === i ? "true" : "false"));
+    };
+    strip.addEventListener("scroll", () => requestAnimationFrame(mark), { passive: true });
+    mark();
   });
 
   document.getElementById("yr").textContent = new Date().getFullYear();
