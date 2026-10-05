@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#050505">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PeerFit">
 <meta property="og:title" content="PeerFit – Plan less. Play more.">
@@ -45,237 +45,265 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Chakra+Petch:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /*
-    Direction: "Matchday". Sports media, not tech startup.
-    Heavy condensed headlines (stadium signage), the pitch deck's grainy orange-to-black gradient
-    as the signature, orange used as big blocks, a fixtures board, and real app screens.
-  */
+  /* Layout: one dark column; real app screens in phone frames carry the story; pitch line art behind the hero */
   :root {
-    --black: #000000;          /* brand black */
-    --white: #FFFFFF;          /* brand white */
-    --paper: #FBF7F4;          /* warm off-white from the Instagram posts */
-    --orange: #DF4F1C;         /* brand orange, exact */
-    --grey: #5E5650;           /* secondary text on paper (6.5:1) */
-    --rule: #E3D9D2;
-    --grey-dark: #A39C97;      /* secondary text on black (7.6:1) */
-    --display: "Big Shoulders Display", Impact, "Arial Narrow", sans-serif;
-    --body: Barlow, "Helvetica Neue", Arial, sans-serif;
+    /* Light: warm off-white like the Instagram posts */
+    --bg: #FBF7F4;
+    --surface: #FFFFFF;
+    --line: #EADFD8;
+    --text: #15110F;
+    --muted: #645B55;
+    --accent: #DF4F1C;       /* pitch deck orange, used everywhere */
+    --on-accent: #15110F;    /* dark text on orange (5.3:1) */
+    --accent-ink: #DF4F1C;
+    --accent-glow: rgba(223,79,28,.18); /* #DF4F1C at low opacity, for glows */
+    --accent-glow-strong: rgba(223,79,28,.7);
+    /* small orange labels: on light backgrounds they become orange tags with dark text */
+    --label-fg: #15110F; --label-bg: #DF4F1C; --label-pad: 4px 9px;
+    /* motion tokens */
     --ease-out: cubic-bezier(.2,.8,.2,1);
+    --ease-in: cubic-bezier(.4,0,1,1);
+    --dur-enter: 600ms;
+    --dur-press: 120ms;
+    --display: Orbitron, "Arial Black", sans-serif;
+    --body: "Chakra Petch", system-ui, sans-serif;
     color-scheme: light;
   }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #050505; --surface: #0f0f0f; --line: #1e1e1e; --text: #f5f5f5; --muted: #8e8e8e; --accent-ink: #DF4F1C; --label-fg: #DF4F1C; --label-bg: transparent; --label-pad: 0; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #050505; --surface: #0f0f0f; --line: #1e1e1e; --text: #f5f5f5; --muted: #8e8e8e; --accent-ink: #DF4F1C; --label-fg: #DF4F1C; --label-bg: transparent; --label-pad: 0; color-scheme: dark; }
+  /* Brand bands stay black in both themes */
+  .hero, .ticker, .final, footer, .dl-bar { --bg: #050505; --surface: #0f0f0f; --line: #1e1e1e; --text: #f5f5f5; --muted: #8e8e8e; --accent-ink: #DF4F1C; --label-fg: #DF4F1C; --label-bg: transparent; --label-pad: 0; background: var(--bg); color: var(--text); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
-  body { background: var(--paper); color: var(--black); font-family: var(--body); font-size: 18px; line-height: 1.55; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-  a { color: inherit; }
-  img { max-width: 100%; display: block; }
-  picture { display: block; }
-  a, button { -webkit-tap-highlight-color: transparent; }
-  :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
-  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: 20px; }
-  h1, h2, h3 { font-family: var(--display); font-weight: 900; text-transform: uppercase; line-height: .9; letter-spacing: .5px; text-wrap: balance; }
-  h2 { font-size: clamp(48px, 8vw, 104px); }
-  .lead { font-size: clamp(18px, 2vw, 21px); max-width: 560px; }
-  .num { font-variant-numeric: tabular-nums; }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 17px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; }
+  h1, h2, h3, h4, .label { font-family: var(--display); text-transform: uppercase; letter-spacing: .5px; text-wrap: balance; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding-inline: 20px; }
+  .accent { color: var(--accent-ink); }
+  .label { display: inline-block; font-size: 13px; letter-spacing: 2.5px; color: var(--label-fg); background: var(--label-bg); padding: var(--label-pad); }
 
-  .skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--orange); color: var(--black); padding: 12px 18px; font-weight: 700; text-decoration: none; }
-  .skip:focus { top: 12px; }
-
-  /* Buttons */
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 14px 26px; font-family: var(--body); font-weight: 700; font-size: 17px; text-decoration: none; border: 2px solid currentColor; white-space: nowrap; transition: transform 120ms var(--ease-out), background .15s, color .15s; }
-  .btn:active { transform: scale(.97); }
-  .btn .ico { width: 20px; height: 20px; flex-shrink: 0; transition: transform 250ms var(--ease-out); }
-  .btn-white { background: var(--white); color: var(--black); border-color: var(--white); }
-  .btn-white:hover { background: var(--orange); border-color: var(--orange); }
-  .btn-black { background: var(--black); color: var(--white); border-color: var(--black); }
-  .btn-black:hover { background: var(--orange); color: var(--black); border-color: var(--orange); }
-  .btn-orange { background: var(--orange); color: var(--black); border-color: var(--orange); }
-  .btn-orange:hover { background: var(--black); color: var(--white); border-color: var(--black); }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) { .btn[data-download]:hover .ico { transform: translateY(3px); } }
-
-  /* Phone frame */
-  .phone { width: 100%; max-width: 300px; border: 8px solid var(--black); border-radius: 38px; overflow: hidden; background: var(--white); }
-
-  /* ---------- Hero: the deck's grainy gradient ---------- */
-  .hero { position: relative; overflow: hidden; color: var(--white); background: var(--black); }
-  .hero::before { content: ""; position: absolute; inset: 0; background:
-      radial-gradient(90% 80% at 8% 105%, #F5A46B 0%, #EE7A3E 18%, var(--orange) 34%, rgba(223,79,28,.45) 55%, transparent 75%),
-      radial-gradient(60% 60% at 100% 0%, rgba(223,79,28,.35), transparent 70%); }
-  .grain { position: absolute; inset: 0; opacity: .32; mix-blend-mode: overlay; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  .hero > .wrap { position: relative; z-index: 1; }
-  nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
-  nav .logo { display: flex; align-items: center; min-height: 48px; }
-  nav .logo img { height: 46px; width: auto; }
-  .nav-links { display: flex; align-items: center; gap: 28px; font-weight: 600; font-size: 16px; }
-  .nav-links a:not(.btn) { text-decoration: none; padding-block: 12px; background: linear-gradient(var(--orange), var(--orange)) left 85% / 0 2px no-repeat; transition: background-size 250ms var(--ease-out); }
-  .nav-links a:not(.btn):hover { background-size: 100% 2px; }
-  .nav-links .btn { min-height: 46px; padding: 10px 18px; font-size: 16px; }
-  .hero-grid { display: grid; grid-template-columns: 1.3fr .7fr; align-items: center; gap: 40px; padding-block: 8px 0; }
-  .hero h1 { font-size: clamp(72px, 10vw, 150px); margin-bottom: 24px; }
-  .hero .lead { color: rgba(255,255,255,.88); margin-bottom: 32px; }
-  .hero-ctas { display: flex; align-items: center; gap: 18px 22px; flex-wrap: wrap; padding-bottom: 40px; }
-  .platform-note { font-weight: 500; color: rgba(255,255,255,.85); }
-  .hero .phone { justify-self: center; align-self: end; max-width: 280px; margin-bottom: -50px; margin-top: 20px; border-bottom: 0; border-radius: 38px 38px 0 0; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 400ms var(--ease-out); }
-
-  /* ---------- Fixtures board ---------- */
-  .fixtures { background: var(--white); padding-block: 110px 90px; border-bottom: 6px solid var(--black); }
-  .fixtures-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 36px; }
-  .fixtures-head p { color: var(--grey); max-width: 420px; }
-  .board { border-top: 6px solid var(--black); }
-  .row { display: grid; grid-template-columns: 120px 90px 1.4fr 1.2fr 180px 110px; align-items: center; gap: 16px; padding-block: 18px; border-bottom: 1px solid var(--rule); text-decoration: none; transition: background .15s; }
-  a.row:hover { background: var(--paper); }
-  .row .day { font-family: var(--display); font-weight: 900; font-size: 30px; text-transform: uppercase; line-height: 1; }
-  .row .time { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; }
-  .row .sport { font-family: var(--display); font-weight: 800; font-size: 28px; text-transform: uppercase; line-height: 1; }
-  .row .place { color: var(--grey); }
-  .spots { display: grid; gap: 6px; font-weight: 600; font-size: 15px; }
-  .bar { height: 8px; background: var(--rule); }
-  .bar i { display: block; height: 100%; background: var(--orange); }
-  .join { justify-self: end; font-weight: 700; padding: 10px 16px; border: 2px solid var(--black); }
-  a.row:hover .join { background: var(--black); color: var(--white); }
-  .board-note { margin-top: 18px; color: var(--grey); font-size: 15px; }
-
-  /* ---------- How it works blocks ---------- */
-  .block { padding-block: 110px; }
-  .block-orange { background: var(--orange); color: var(--black); }
-  .block-black { background: var(--black); color: var(--white); }
-  .block-paper { background: var(--paper); }
-  .block-head { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 60px; align-items: end; margin-bottom: 56px; }
-  .block-head p { max-width: 460px; }
-  .block-black .block-head p { color: var(--grey-dark); }
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; counter-reset: s; }
-  .steps.six { grid-template-columns: repeat(3, 1fr); row-gap: 64px; }
-  .steps.three { grid-template-columns: repeat(3, 1fr); }
-  .step { min-width: 0; display: grid; gap: 18px; align-content: start; }
-  .step .phone { max-width: 270px; }
-  .block-black .step .phone { border-color: #2A2A2A; }
-  .step-n { font-family: var(--display); font-weight: 900; font-size: 64px; line-height: .8; }
-  .block-orange .step-n { color: var(--black); }
-  .block-black .step-n, .block-paper .step-n { color: var(--orange); }
-  .step h3 { font-size: 30px; margin: 10px 0 6px; }
-  .step p { font-size: 17px; }
-  .block-black .step p { color: var(--grey-dark); }
-  .block-paper .step p { color: var(--grey); }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .step .phone { transition: transform 300ms var(--ease-out); }
-    .step .phone img { transition: transform 500ms var(--ease-out); }
-    .step:hover .phone { transform: translateY(-8px) rotate(-1.5deg); }
-    .step:hover .phone img { transform: scale(1.04); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px;
+    font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+    background: var(--accent); color: var(--on-accent); border: 2px solid var(--accent);
+    padding: 14px 28px; white-space: nowrap; transition: background .15s, color .15s, border-color .15s;
   }
-  .steps:focus-visible { outline: 3px solid currentColor; outline-offset: 8px; }
-  .dots { display: none; justify-content: center; gap: 2px; margin-top: 10px; }
-  .dots button { width: 44px; height: 44px; border: 0; background: none; cursor: pointer; display: grid; place-items: center; color: inherit; }
-  .dots button::before { content: ""; width: 10px; height: 10px; border: 2px solid currentColor; opacity: .5; transition: width 200ms var(--ease-out), opacity 200ms; }
-  .dots button[aria-current="true"]::before { width: 28px; background: currentColor; opacity: 1; }
+  .btn:hover { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .btn:focus-visible, a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  .btn.ghost { background: transparent; border-color: var(--muted); color: var(--text); }
+  .btn.ghost:hover { border-color: var(--text); }
+  .btn .ico { width: 18px; height: 18px; flex-shrink: 0; }
+  .btn.big { font-size: 16px; padding: 20px 40px; min-height: 64px; box-shadow: 0 0 0 6px var(--accent-glow), 0 18px 50px -12px var(--accent-glow-strong); }
+  .btn.big .ico { width: 22px; height: 22px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn.big { animation: pulse 2.4s ease-in-out 1s 3; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 12px transparent, 0 18px 50px -12px var(--accent-glow-strong); } }
+  }
+  .section-cta { margin-top: 52px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 28px; border: 1px solid var(--accent); background: var(--surface); }
+  .section-cta p { color: var(--text); font-family: var(--display); text-transform: uppercase; font-size: 15px; letter-spacing: .5px; flex: 1; min-width: 220px; }
+  .free { color: var(--muted); font-size: 14px; }
 
-  /* ---------- Without / With ---------- */
-  .vs { display: grid; grid-template-columns: 1fr 1fr; }
-  .vs > div { padding: 90px clamp(20px, 5vw, 70px); }
-  .without { background: var(--white); }
-  .without ul { list-style: none; margin-top: 30px; display: grid; gap: 14px; }
-  .without li { font-size: 21px; color: var(--grey); text-decoration: line-through; text-decoration-color: var(--orange); text-decoration-thickness: 2px; }
-  .with { background: var(--black); color: var(--white); }
-  .with p { color: var(--grey-dark); margin-top: 20px; max-width: 420px; }
-  .vs h2 { font-size: clamp(44px, 6vw, 80px); }
-  .notif { display: flex; align-items: center; gap: 14px; margin-top: 34px; padding: 14px 16px; background: rgba(255,255,255,.96); color: var(--black); border-radius: 18px; max-width: 420px; }
-  .notif img { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; }
-  .notif b { display: block; font-size: 14px; letter-spacing: .5px; }
-  .notif span { display: block; font-size: 16px; }
-  .notif time { margin-left: auto; align-self: flex-start; color: var(--grey); font-size: 13px; }
-
-  /* ---------- Sports index ---------- */
-  .sports { background: var(--white); padding-block: 110px; }
-  .sports-list { list-style: none; columns: 4 220px; column-gap: 40px; margin-top: 48px; border-top: 6px solid var(--black); padding-top: 22px; }
-  .sports-list li { font-family: var(--display); font-weight: 800; font-size: 30px; text-transform: uppercase; line-height: 1.25; break-inside: avoid; }
-  .sports-list li.more { color: var(--orange); }
-  .sports-foot { margin-top: 30px; color: var(--grey); }
-
-  /* ---------- Final download ---------- */
-  .final { position: relative; overflow: hidden; background: var(--black); color: var(--white); padding-block: 130px; }
-  .final::before { content: ""; position: absolute; inset: 0; background: radial-gradient(80% 90% at 100% 100%, #F5A46B 0%, var(--orange) 30%, rgba(223,79,28,.4) 55%, transparent 75%); }
-  .final > .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.3fr .7fr; gap: 40px; align-items: center; }
-  .final h2 { font-size: clamp(64px, 11vw, 150px); margin-bottom: 26px; }
-  .final .lead { color: rgba(255,255,255,.88); margin-bottom: 34px; }
-  .stores { display: flex; gap: 12px; flex-wrap: wrap; }
-  .store { display: flex; align-items: center; gap: 12px; min-width: 200px; min-height: 60px; padding: 10px 20px; background: var(--white); color: var(--black); text-decoration: none; border-radius: 12px; transition: transform 200ms var(--ease-out), background .15s; }
-  .store:hover { background: var(--orange); }
-  .store:active { transform: scale(.97); }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) { .store:hover { transform: translateY(-3px); } }
-  .store .ico { width: 28px; height: 28px; fill: currentColor; flex-shrink: 0; }
-  .store span { display: flex; flex-direction: column; line-height: 1.15; }
-  .store small { font-size: 12px; }
-  .store b { font-size: 20px; }
-  .qr { justify-self: end; background: var(--white); color: var(--black); padding: 18px; border-radius: 16px; text-align: center; font-weight: 600; font-size: 15px; }
-  .qr-code img { width: 160px; height: 160px; image-rendering: pixelated; margin: 0 auto 10px; }
-
-  footer { background: var(--black); color: var(--grey-dark); padding-block: 30px calc(30px + env(safe-area-inset-bottom, 0px)); font-size: 15px; border-top: 1px solid #222; }
-  footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px 30px; flex-wrap: wrap; }
-  footer img { height: 34px; width: auto; }
-  .foot-links { display: flex; flex-wrap: wrap; gap: 0 24px; }
-  .foot-links a { padding-block: 12px; text-underline-offset: 4px; text-decoration-color: var(--grey-dark); }
-  .foot-links a:hover { color: var(--white); text-decoration-color: var(--orange); }
-
-  /* Download bar on phones/scroll */
-  .dl-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--orange); color: var(--black); padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px)); transform: translateY(110%); transition: transform 300ms var(--ease-out); }
+  /* Download bar that stays on screen while scrolling */
+  .dl-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background-color: rgba(5,5,5,.94); backdrop-filter: blur(8px); border-top: 1px solid var(--accent); padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateY(110%); transition: transform .3s ease; }
   .dl-bar.show { transform: none; }
   .dl-bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-inline: 0; }
-  .dl-bar p { font-family: var(--display); font-weight: 900; font-size: 26px; text-transform: uppercase; line-height: 1; }
+  .dl-bar img { height: 34px; width: auto; }
+  .dl-bar p { color: var(--muted); font-size: 15px; flex: 1; }
+  .dl-bar .btn { min-height: 52px; font-size: 14px; }
+  @media (max-width: 600px) { .dl-bar img, .dl-bar p { display: none; } .dl-bar .btn { width: 100%; } }
 
-  /* ---------- Motion (one load moment + notification) ---------- */
+  /* Phone frame around real app screens */
+  .phone { width: 100%; max-width: 260px; border: 7px solid #1a1a1a; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 30px 80px -30px var(--accent-glow-strong); }
+  .phone img { display: block; width: 100%; height: auto; }
+
+  /* Nav */
+  nav { display: flex; align-items: center; justify-content: space-between; padding-block: 22px; position: relative; z-index: 2; }
+  nav > a:first-child { display: flex; align-items: center; min-height: 48px; }
+  nav img { height: 42px; width: auto; display: block; }
+  .nav-links { display: flex; align-items: center; gap: 28px; font-size: 15px; color: var(--muted); }
+  .nav-links a:not(.btn) { position: relative; padding-block: 12px; }
+  .nav-links a:not(.btn)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 250ms var(--ease-out); }
+  .nav-links a:not(.btn):hover { color: var(--text); }
+  .nav-links a:not(.btn):hover::after, .nav-links a:not(.btn):focus-visible::after { transform: scaleX(1); }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .pitch { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .pitch * { fill: none; stroke: var(--line); stroke-width: 2; }
+  .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: center; padding-block: 50px 80px; }
+  .hero h1 { font-size: clamp(34px, 6vw, 80px); font-weight: 900; line-height: .98; margin: 18px 0 26px; }
+  .hero p { color: var(--muted); font-size: clamp(17px, 2vw, 20px); max-width: 520px; margin-bottom: 34px; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero .phone { justify-self: center; max-width: 290px; transform: perspective(900px) rotate(3deg) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+
+  /* Sports ticker */
+  .ticker { border-bottom: 1px solid var(--line); overflow: hidden; padding-block: 18px; }
+  .ticker-track { display: flex; gap: 44px; width: max-content; animation: slide 80s linear infinite; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  .ticker span { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 44px; white-space: nowrap; }
+  .ticker span::after { content: ""; width: 6px; height: 6px; background: var(--accent); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+  /* Sections */
+  section { padding-block: 100px; border-bottom: 1px solid var(--line); }
+  .head { margin-bottom: 48px; max-width: 660px; }
+  .head h2 { font-size: clamp(28px, 4.5vw, 46px); line-height: 1.05; }
+  .head p { color: var(--muted); margin-top: 14px; }
+
+  /* Plan less / play more */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .compare img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
+  .vs { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 8px; }
+  .vs > div { background: var(--bg); padding: 22px 24px; }
+  .vs h3 { font-size: 13px; letter-spacing: 2px; margin-bottom: 6px; }
+  .vs .without h3 { color: var(--muted); }
+  .vs .with h3 { display: inline-block; color: var(--label-fg); background: var(--label-bg); padding: var(--label-pad); }
+  .vs p { color: var(--muted); }
+  .vs .with p { color: var(--text); }
+
+  /* Step strips with screens */
+  .steps { display: grid; gap: 28px; }
+  .steps.four { grid-template-columns: repeat(4, 1fr); }
+  .steps.three { grid-template-columns: repeat(3, 1fr); row-gap: 56px; }
+  .step { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .step .phone { max-width: 240px; box-shadow: 0 20px 50px -28px rgba(0,0,0,.45); }
+  .step-num { display: inline-block; font-family: var(--display); font-weight: 900; font-size: 13px; letter-spacing: 2px; color: var(--label-fg); background: var(--label-bg); padding: var(--label-pad); }
+  .step h3 { font-size: 17px; margin: 4px 0 6px; }
+  .step p { color: var(--muted); font-size: 15px; }
+
+  /* Sports list */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { border: 1px solid var(--line); padding: 9px 16px; font-size: 15px; background: var(--surface); }
+  .chip.more { border-style: dashed; background: transparent; color: var(--muted); }
+  .note { color: var(--muted); font-size: 15px; margin-top: 22px; }
+
+  /* ---------- Motion ---------- */
+  a, button { -webkit-tap-highlight-color: transparent; }
+  /* Press feedback for touch and mouse */
+  .btn, .store, .dots button { transition: transform var(--dur-press) var(--ease-out), background .15s, color .15s, border-color .15s; }
+  .btn:active, .store:active { transform: scale(.97); }
+  .btn.big:active { transform: scale(.97); }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    /* Download arrow nudges down: "this downloads" */
+    .btn .ico { transition: transform 250ms var(--ease-out); }
+    .btn[data-download]:hover .ico { transform: translateY(3px); }
+    /* Store badges lift like a real button */
+    .store:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -14px var(--accent-glow-strong); }
+    .store .ico { transition: transform 250ms var(--ease-out); }
+    .store:hover .ico { transform: scale(1.12); }
+    /* App screens: phone lifts, screen zooms slightly inside the frame, step tag lights up */
+    .step .phone { transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out); }
+    .step .phone img { transition: transform 500ms var(--ease-out); }
+    .step:hover .phone { transform: translateY(-6px); box-shadow: 0 30px 60px -28px rgba(0,0,0,.5); }
+    .step:hover .phone img { transform: scale(1.04); }
+    .step-num { transition: background 200ms, color 200ms; }
+    .step:hover .step-num { background: var(--text); color: var(--bg); }
+    /* Hero phone follows the mouse a little */
+    .hero .phone { transition: transform 400ms var(--ease-out); }
+    /* Sports strip: the word under the mouse lights up while the strip pauses */
+    .ticker span { transition: color 200ms; }
+    .ticker span:hover { color: var(--accent); }
+    /* Notification responds when you look at it */
+    .notif { transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out), opacity 500ms var(--ease-out); }
+    .with:hover .notif:not(.pre) { transform: translateY(-4px); box-shadow: 0 24px 50px -24px rgba(0,0,0,.5); }
+  }
+  .dots button:hover::before { border-color: var(--text); }
+
+  /* Notification that shows what PeerFit does for organisers */
+  .notif { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 16px 40px -24px rgba(0,0,0,.45); max-width: 420px; }
+  .notif img { width: 40px; height: 40px; flex-shrink: 0; }
+  .notif b { display: block; font-family: var(--display); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+  .notif span { display: block; font-size: 15px; }
+  .notif time { margin-left: auto; align-self: flex-start; color: var(--muted); font-size: 13px; }
+
   @media (prefers-reduced-motion: no-preference) {
-    .hero h1 .line { display: block; animation: rise 700ms var(--ease-out) both; }
-    .hero h1 .line + .line { animation-delay: 90ms; }
-    .hero .lead, .hero-ctas { animation: rise 700ms var(--ease-out) 200ms both; }
-    .hero .phone { animation: phone-up 900ms var(--ease-out) 250ms backwards; }
-    @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
-    @keyframes phone-up { from { opacity: 0; transform: translateY(120px); } }
+    /* 1. Page-load sequence: headline, then the phone settles into its tilt */
+    .hero .label, .hero h1, .hero-grid > div > p, .hero .ctas { animation: rise var(--dur-enter) var(--ease-out) both; }
+    .hero h1 { animation-delay: 80ms; }
+    .hero-grid > div > p:first-of-type { animation-delay: 160ms; }
+    .hero .ctas { animation-delay: 240ms; }
+    .hero-grid > div > p.free { animation-delay: 300ms; }
+    .hero .phone { animation: phone-in 900ms var(--ease-out) 250ms backwards; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+    @keyframes phone-in { from { opacity: 0; transform: translateY(60px) rotate(0deg); } to { opacity: 1; transform: perspective(900px) rotate(3deg) rotateX(0deg) rotateY(0deg); } }
+
+    /* 2 & 3. Scroll moments, only for content that starts below the fold */
+    .js .notif.pre { opacity: 0; transform: translateY(-14px) scale(.98); }
     .js .notif { transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
-    .js .notif.pre { opacity: 0; transform: translateY(-16px); }
+    .js .step.pre .phone { opacity: 0; transform: translateY(24px); }
+    .js .step .phone { transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
   }
 
-  /* ---------- Responsive ---------- */
-  @media (max-width: 1000px) {
-    .row { grid-template-columns: 90px 70px 1fr auto; row-gap: 6px; }
-    .row .place { grid-column: 3; grid-row: 2; font-size: 15px; }
-    .row .spots { grid-column: 1 / 3; grid-row: 2; }
-    .row .join { grid-column: 4; grid-row: 1 / 3; }
-    .row .day, .row .time { font-size: 24px; }
-    .row .sport { font-size: 22px; }
-  }
-  @media (max-width: 900px) {
+  /* Position dots for the swipe strips (phones and tablets) */
+  .dots { display: none; justify-content: center; gap: 2px; margin-top: 8px; }
+  .dots button { width: 44px; height: 44px; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dots button::before { content: ""; width: 8px; height: 8px; background: var(--line); border: 1px solid var(--muted); transition: width 200ms var(--ease-out), background 200ms; }
+  .dots button[aria-current="true"]::before { width: 22px; background: var(--accent); border-color: var(--accent); }
+  .dots button:focus-visible { outline: 2px solid var(--accent); outline-offset: -6px; }
+
+  /* Download */
+  .final { text-align: center; padding-block: 120px; border-bottom: 0; }
+  .final .label + h2 { margin-top: 16px; }
+  .final h2 { font-size: clamp(36px, 7vw, 84px); font-weight: 900; line-height: 1; margin: 16px 0 22px; }
+  .final p { color: var(--muted); margin-bottom: 34px; }
+  .stores { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .store { display: flex; align-items: center; gap: 12px; min-width: 200px; min-height: 60px; padding: 10px 20px; background: var(--text); color: var(--bg); border: 2px solid var(--text); transition: background .15s, color .15s, border-color .15s; }
+  .store:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .store .ico { width: 28px; height: 28px; fill: currentColor; flex-shrink: 0; }
+  .store span { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+  .store small { font-size: 12px; opacity: .8; }
+  .store b { font-family: var(--display); font-size: 17px; letter-spacing: .5px; }
+  .qr { margin: 40px auto 0; display: flex; align-items: center; justify-content: center; gap: 18px; color: var(--muted); font-size: 15px; text-align: left; }
+  .qr-code { background: #fff; padding: 10px; width: 132px; height: 132px; }
+  .qr-code img { display: block; width: 112px; height: 112px; image-rendering: pixelated; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  footer img { height: 30px; width: auto; }
+
+  @media (max-width: 960px) {
     .nav-links a:not(.btn) { display: none; }
-    .hero-grid, .final > .wrap, .block-head, .vs { grid-template-columns: 1fr; }
-    .hero .phone { max-width: 250px; margin-bottom: -40px; }
-    .hero-ctas { padding-bottom: 20px; }
-    .block, .fixtures, .sports { padding-block: 72px; }
-    .vs > div { padding-block: 64px; }
-    .final { padding-block: 80px; }
-    .qr { display: none; }
-    .steps, .steps.six, .steps.three { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 18px; padding-bottom: 6px; overscroll-behavior-x: contain; scrollbar-width: none; }
+    .hero-grid, .compare { grid-template-columns: 1fr; }
+    .hero .phone { max-width: 240px; }
+    section { padding-block: 64px; }
+    .hero-grid { padding-block: 24px 56px; gap: 36px; }
+    /* Screens become a swipeable strip */
+    .steps.four, .steps.three { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; padding-bottom: 12px; overscroll-behavior-x: contain; scrollbar-width: none; }
     .steps::-webkit-scrollbar { display: none; }
-    .step { flex: 0 0 min(74vw, 290px); scroll-snap-align: start; }
+    .step { flex: 0 0 min(72vw, 280px); scroll-snap-align: start; }
     .step .phone { max-width: 100%; }
     .dots { display: flex; }
-    .block-head { margin-bottom: 36px; }
   }
-  @media (max-width: 560px) {
-    body { font-size: 17px; }
-    .hero-ctas .btn { width: 100%; }
-    .row { grid-template-columns: 64px 1fr auto; column-gap: 12px; }
-    .row .day { font-size: 20px; }
-    .row .time { grid-column: 1; grid-row: 2; font-size: 20px; }
-    .row .sport { grid-column: 2; grid-row: 1; font-size: 22px; }
-    .row .place { grid-column: 2; grid-row: 2; }
-    .row .spots { grid-column: 1 / 4; grid-row: 3; }
-    .row .join { grid-column: 3; grid-row: 1 / 3; padding: 10px 12px; }
-    .sports-list li { font-size: 26px; }
+  .steps:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+  picture { display: block; }
+  .skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--accent); color: var(--on-accent); padding: 12px 18px; font-weight: 600; }
+  .skip:focus { top: 12px; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .foot-links a { text-decoration: underline; text-underline-offset: 3px; padding-block: 12px; }
+  .foot-links a { text-decoration-color: var(--muted); transition: color .15s, text-decoration-color .15s; }
+  .foot-links a:hover { color: var(--text); text-decoration-color: var(--accent); }
+  @media (max-width: 600px) { .qr { display: none; } }
+  @media (max-width: 520px) {
+    .ctas .btn { width: 100%; }
+    .btn.big { font-size: 15px; letter-spacing: 1px; padding: 18px 20px; }
+    .step p, .note { font-size: 16px; }
+    .section-cta { padding: 22px; }
+    .section-cta .btn { width: 100%; }
     .store { flex: 1 1 200px; }
-    .dl-bar p { display: none; }
-    .dl-bar .btn { width: 100%; }
-    nav .btn { padding: 10px 14px; }
-    nav .logo img { height: 40px; }
+    .head { margin-bottom: 32px; }
+    .hero .phone { max-width: 230px; }
+    .final { padding-block: 88px; }
+    .notif { max-width: none; }
+  }
+  @media (max-width: 400px) {
+    nav .btn { padding: 10px 14px; font-size: 12px; letter-spacing: 1px; min-height: 44px; }
+    nav img { height: 36px; }
   }
 </style>
 </head>
@@ -283,139 +311,188 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="hero">
-  <div class="grain" aria-hidden="true"></div>
+  <!-- Football pitch line art -->
+  <svg class="pitch" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect x="40" y="40" width="1120" height="620"/>
+    <line x1="600" y1="40" x2="600" y2="660"/>
+    <circle cx="600" cy="350" r="95"/>
+    <rect x="40" y="200" width="170" height="300"/>
+    <rect x="40" y="275" width="60" height="150"/>
+    <rect x="990" y="200" width="170" height="300"/>
+    <rect x="1100" y="275" width="60" height="150"/>
+    <path d="M210 290 A70 70 0 0 1 210 410"/>
+    <path d="M990 290 A70 70 0 0 0 990 410"/>
+  </svg>
   <div class="wrap">
     <nav>
-      <a class="logo" href="#" aria-label="PeerFit home"><img src="logo.png" alt="PeerFit" width="88" height="46"></a>
+      <a href="#" aria-label="PeerFit home"><img src="logo.png" alt="PeerFit" width="80" height="42"></a>
       <div class="nav-links">
-        <a href="#games">Games</a>
-        <a href="#host">Host</a>
-        <a href="#communities">Communities</a>
-        <a class="btn btn-white" href="#" data-download>Get the app</a>
+        <a href="#join">Join a game</a>
+        <a href="#create">Create an event</a>
+        <a href="#sports">Sports</a>
+        <a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
       </div>
     </nav>
     <div class="hero-grid">
       <div>
-        <h1><span class="line">Plan less.</span><span class="line">Play more.</span></h1>
-        <p class="lead">PeerFit finds you a game, fills your team and keeps everyone in one chat. Football, basketball, running, hiking and 30+ more sports.</p>
-        <div class="hero-ctas">
-          <a class="btn btn-white" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
-          <span class="platform-note">On iPhone and Android</span>
+        <div class="label">The app for team sports</div>
+        <h1>Plan less.<br><span class="accent">Play more.</span></h1>
+        <p>Find a game near you, or create your own in a few taps. PeerFit fills the spots, so you can stop chasing people in group chats.</p>
+        <div class="ctas">
+          <a class="btn big" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
+          <a class="btn ghost" href="#join">See how it works</a>
         </div>
+        <p class="free" style="margin-top:16px">Free on iPhone and Android</p>
       </div>
       <div class="phone"><picture><source srcset="screens/discover.webp" type="image/webp"><img src="screens/discover.jpg" alt="The Discover screen in PeerFit, showing filters, sports and a football match with a Join button" width="480" height="1000" fetchpriority="high"></picture></div>
     </div>
   </div>
 </header>
 
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Football</span><span>Basketball</span><span>Running</span><span>Cycling</span><span>Boxing</span><span>Climbing</span><span>Badminton</span><span>Crossfit</span><span>Handball</span><span>Hiking</span><span>Golf</span><span>Jiu-Jitsu</span>
+    <span>Football</span><span>Basketball</span><span>Running</span><span>Cycling</span><span>Boxing</span><span>Climbing</span><span>Badminton</span><span>Crossfit</span><span>Handball</span><span>Hiking</span><span>Golf</span><span>Jiu-Jitsu</span>
+  </div>
+</div>
+
 <main id="main">
-  <section class="fixtures" id="games" aria-labelledby="games-title">
-    <div class="wrap">
-      <div class="fixtures-head">
-        <h2 id="games-title">This week<br>near you</h2>
-        <p>Every game shows the time, the place, the level and how many spots are left. Tap Join and you're in.</p>
-      </div>
-      <div class="board" role="list">
-        <a class="row" href="#" data-download role="listitem"><span class="day">Tonight</span><span class="time num">20:00</span><span class="sport">Football 5v5</span><span class="place">Rabat, intermediate</span><span class="spots num">8 of 10 players<span class="bar"><i style="width:80%"></i></span></span><span class="join">Join</span></a>
-        <a class="row" href="#" data-download role="listitem"><span class="day">Sat</span><span class="time num">10:30</span><span class="sport">Basketball 3v3</span><span class="place">Casablanca, all levels</span><span class="spots num">4 of 6 players<span class="bar"><i style="width:67%"></i></span></span><span class="join">Join</span></a>
-        <a class="row" href="#" data-download role="listitem"><span class="day">Sat</span><span class="time num">17:00</span><span class="sport">Hiking</span><span class="place">Atlas, Marrakech, advanced</span><span class="spots num">6 of 12 hikers<span class="bar"><i style="width:50%"></i></span></span><span class="join">Join</span></a>
-        <a class="row" href="#" data-download role="listitem"><span class="day">Sun</span><span class="time num">08:00</span><span class="sport">Run club 10K</span><span class="place">Dubai Marina, all levels</span><span class="spots num">18 of 30 runners<span class="bar"><i style="width:60%"></i></span></span><span class="join">Join</span></a>
-      </div>
-      <p class="board-note">Example games, to show what you'll find in the app.</p>
-    </div>
-  </section>
-
-  <section class="block block-orange" id="find" aria-labelledby="find-title">
-    <div class="wrap">
-      <div class="block-head">
-        <h2 id="find-title">Find a game</h2>
-        <p class="lead">Open Discover, filter by sport, level and day, and see exactly what you're signing up for.</p>
-      </div>
-      <div class="steps" role="region" aria-label="Steps to find a game" tabindex="0">
-        <div class="step"><div class="phone"><picture><source srcset="screens/discover.webp" type="image/webp"><img src="screens/discover.jpg" alt="Discover screen" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">1</div><h3>Open Discover</h3><p>Search by event or location.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/filter.webp" type="image/webp"><img src="screens/filter.jpg" alt="Filters for level, date and sport" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">2</div><h3>Filter</h3><p>Your level, the day, the sport.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/details.webp" type="image/webp"><img src="screens/details.jpg" alt="Event details with date, duration, map, intensity and capacity" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">3</div><h3>Check it</h3><p>Time, place, intensity, spots left. Tap the address for directions.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/join.webp" type="image/webp"><img src="screens/join.jpg" alt="The Join button on an event" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">4</div><h3>Join</h3><p>One tap and your spot is saved.</p></div></div>
+  <section>
+    <div class="wrap compare">
+      <picture><source srcset="screens/plan-less.webp" type="image/webp"><img src="screens/plan-less.jpg" alt="Without PeerFit, an organiser juggles calls, notes and group chats. With PeerFit, he gets a notification that all members signed up to his event." width="900" height="900" loading="lazy"></picture>
+      <div>
+        <div class="head" style="margin-bottom:28px">
+          <h2 style="margin-top:0">Stop organising. Start playing.</h2>
+        </div>
+        <div class="vs">
+          <div class="without"><h3>Without PeerFit</h3><p>Endless group chats, "who's in?", last-minute dropouts and a game that never happens.</p></div>
+          <div class="with"><h3>With PeerFit</h3><p>One event, everyone signs up, and you get a notification when your team is complete.</p>
+            <div class="notif" role="img" aria-label="Example PeerFit notification: All members have signed up to your event">
+              <img src="favicon.png" alt="" width="40" height="40">
+              <div><b>PeerFit</b><span>All members have signed up to your event ✓</span></div>
+              <time>now</time>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="block block-black" id="host" aria-labelledby="host-title">
+  <section id="join">
     <div class="wrap">
-      <div class="block-head">
-        <h2 id="host-title">Host your own</h2>
-        <p class="lead">Booked a pitch and missing players? Set up the game once and let people come to you.</p>
+      <div class="head">
+        <h2>Find a game in 4 steps</h2>
+        <p>See what's being played near you, check the details, and reserve your place.</p>
       </div>
-      <div class="steps six" role="region" aria-label="Steps to host a game" tabindex="0">
-        <div class="step"><div class="phone"><picture><source srcset="screens/my-events.webp" type="image/webp"><img src="screens/my-events.jpg" alt="My Events screen with the + button" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">1</div><h3>Tap +</h3><p>In My Events.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/basics.webp" type="image/webp"><img src="screens/basics.jpg" alt="Event basics: title, sport and skill level" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">2</div><h3>Name it</h3><p>A clear title, the sport and the level.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/sport.webp" type="image/webp"><img src="screens/sport.jpg" alt="Sport list with search and custom sport" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">3</div><h3>Pick the sport</h3><p>Or add your own if it's not listed.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/event-details.webp" type="image/webp"><img src="screens/event-details.jpg" alt="Max participants, intensity, equipment, private event and price" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">4</div><h3>Set the rules</h3><p>Max players, intensity, free or paid, open or private.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/publish.webp" type="image/webp"><img src="screens/publish.jpg" alt="Review screen with the Publish event button" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">5</div><h3>Publish</h3><p>Check the details and go live.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/manage.webp" type="image/webp"><img src="screens/manage.jpg" alt="Created event with Chat and Manage buttons" width="480" height="1000" loading="lazy"></picture></div><div><div class="step-n" aria-hidden="true">6</div><h3>Run it</h3><p>Chat with your players and update the game.</p></div></div>
+      <div class="steps four" role="region" aria-label="Steps to find a game" tabindex="0">
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/discover.webp" type="image/webp"><img src="screens/discover.jpg" alt="Discover screen" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 1</div><h3>Open Discover</h3><p>Tap Discover in the bottom menu. You can also search by event or location.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/filter.webp" type="image/webp"><img src="screens/filter.jpg" alt="Filters for level, date and sport" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 2</div><h3>Filter your search</h3><p>Choose your level, the date and the sport.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/details.webp" type="image/webp"><img src="screens/details.jpg" alt="Event details with date, duration, map, intensity and capacity" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 3</div><h3>Check the details</h3><p>Date, duration, level, intensity and places left. Tap the address for directions.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/join.webp" type="image/webp"><img src="screens/join.jpg" alt="The Join button on an event" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 4</div><h3>Join</h3><p>Tap Join to reserve your place. Your next session starts here.</p></div>
+        </div>
       </div>
+      <div class="section-cta"><p>Ready to play? Find a game near you.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
     </div>
   </section>
 
-  <section class="vs" aria-labelledby="vs-title">
-    <div class="without">
-      <h2 id="vs-title">Without PeerFit</h2>
-      <ul>
-        <li>Forty messages in the group chat</li>
-        <li>"Who's in?"</li>
-        <li>Two players drop out at 7pm</li>
-        <li>Game cancelled</li>
-      </ul>
-    </div>
-    <div class="with">
-      <h2>With PeerFit</h2>
-      <p>One event. People sign up. You get told when the team is full.</p>
-      <div class="notif" role="img" aria-label="Example PeerFit notification: All members have signed up to your event">
-        <img src="favicon.png" alt="" width="44" height="44">
-        <div><b>PEERFIT</b><span>All members have signed up to your event ✓</span></div>
-        <time>now</time>
+  <section id="create">
+    <div class="wrap">
+      <div class="head">
+        <h2>Host your own game</h2>
+        <p>Set it up once and let players come to you.</p>
       </div>
+      <div class="steps three" role="region" aria-label="Steps to create an event" tabindex="0">
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/my-events.webp" type="image/webp"><img src="screens/my-events.jpg" alt="My Events screen with the + button" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 1</div><h3>Open My Events</h3><p>Tap My Events, then the + button.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/basics.webp" type="image/webp"><img src="screens/basics.jpg" alt="Event basics: title, sport and skill level" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 2</div><h3>Add the basics</h3><p>Give your event a clear title, choose the sport and the skill level.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/sport.webp" type="image/webp"><img src="screens/sport.jpg" alt="Sport list with search and custom sport" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 3</div><h3>Choose the sport</h3><p>Search the list, or add a custom sport if yours isn't there.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/event-details.webp" type="image/webp"><img src="screens/event-details.jpg" alt="Max participants, intensity, equipment, private event and price" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 4</div><h3>Set the details</h3><p>Max players and intensity. Free or paid, open or private.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/publish.webp" type="image/webp"><img src="screens/publish.jpg" alt="Review screen with the Publish event button" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 5</div><h3>Review &amp; publish</h3><p>Check every detail, then tap Publish event.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/manage.webp" type="image/webp"><img src="screens/manage.jpg" alt="Created event with Chat and Manage buttons" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Step 6</div><h3>Manage your event</h3><p>Find it under Created. Chat with players or update the event.</p></div>
+        </div>
+      </div>
+      <div class="section-cta"><p>Host your first game today.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
     </div>
   </section>
 
-  <section class="block block-paper" id="communities" aria-labelledby="com-title">
+  <section id="sports">
     <div class="wrap">
-      <div class="block-head">
-        <h2 id="com-title">Find your crew</h2>
-        <p class="lead">Join a community for your sport and city, or start one for your team, run club or campus.</p>
+      <div class="head">
+        <h2>Every sport. Every level.</h2>
+        <p>From football to jiu-jitsu, beginner to advanced.</p>
+      </div>
+      <div class="chips">
+        <span class="chip">Aerobics</span><span class="chip">American Football</span><span class="chip">Badminton</span><span class="chip">Barre</span><span class="chip">Baseball</span><span class="chip">Basketball</span><span class="chip">Bodybuilding</span><span class="chip">Bootcamp</span><span class="chip">Bouldering</span><span class="chip">Boxing</span><span class="chip">Calisthenics</span><span class="chip">Canoeing</span><span class="chip">Climbing</span><span class="chip">Cricket</span><span class="chip">Cross-Country Skiing</span><span class="chip">Crossfit</span><span class="chip">Cycling</span><span class="chip">Dance</span><span class="chip">Duathlon</span><span class="chip">Fencing</span><span class="chip">Football</span><span class="chip">Frisbee</span><span class="chip">Functional Training</span><span class="chip">Golf</span><span class="chip">Handball</span><span class="chip">HIIT</span><span class="chip">Hiking</span><span class="chip">Ice Skating</span><span class="chip">Jiu-Jitsu</span><span class="chip">Judo</span><span class="chip more">+ many more</span>
+      </div>
+      <p class="note">Can't find yours? Add a custom sport when you create an event.</p>
+      <div class="section-cta"><p>Your sport is waiting.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
+    </div>
+  </section>
+
+  <section id="communities">
+    <div class="wrap">
+      <div class="head">
+        <h2>Find your crew. Or start one.</h2>
+        <p>Join a community for your sport and city, or start one for your team, your run club or your campus.</p>
       </div>
       <div class="steps three" role="region" aria-label="Community screens" tabindex="0">
-        <div class="step"><div class="phone"><picture><source srcset="screens/communities.webp" type="image/webp"><img src="screens/communities.jpg" alt="Communities list with members, points and city for each community" width="480" height="1000" loading="lazy"></picture></div><div><h3>Browse</h3><p>Members, points and city for every community.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/community.webp" type="image/webp"><img src="screens/community.jpg" alt="A hiking community page with members, points, events and a Create Community Event button" width="480" height="1000" loading="lazy"></picture></div><div><h3>Join</h3><p>See upcoming events and create your own for the group.</p></div></div>
-        <div class="step"><div class="phone"><picture><source srcset="screens/community-chat.webp" type="image/webp"><img src="screens/community-chat.jpg" alt="Community chat with messages and a poll for the next hiking destination" width="480" height="1000" loading="lazy"></picture></div><div><h3>Plan</h3><p>Chat and run polls, like where to hike next.</p></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="sports" id="sports" aria-labelledby="sports-title">
-    <div class="wrap">
-      <h2 id="sports-title">Every sport</h2>
-      <ul class="sports-list">
-        <li>Aerobics</li><li>American football</li><li>Badminton</li><li>Barre</li><li>Baseball</li><li>Basketball</li><li>Bodybuilding</li><li>Bootcamp</li><li>Bouldering</li><li>Boxing</li><li>Calisthenics</li><li>Canoeing</li><li>Climbing</li><li>Cricket</li><li>Cross-country skiing</li><li>Crossfit</li><li>Cycling</li><li>Dance</li><li>Duathlon</li><li>Fencing</li><li>Football</li><li>Frisbee</li><li>Functional training</li><li>Golf</li><li>Handball</li><li>HIIT</li><li>Hiking</li><li>Ice skating</li><li>Jiu-jitsu</li><li>Judo</li><li class="more">And more</li>
-      </ul>
-      <p class="sports-foot">Yours isn't listed? Add it as a custom sport when you create a game.</p>
-    </div>
-  </section>
-
-  <section class="final" id="download" aria-labelledby="dl-title">
-    <div class="grain" aria-hidden="true"></div>
-    <div class="wrap">
-      <div>
-        <h2 id="dl-title">Find your peer</h2>
-        <p class="lead">Free on iPhone and Android.</p>
-        <div class="stores">
-          <a class="store" href="https://apps.apple.com/us/app/peer-fit/id6754720762"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.59 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21z"/></svg><span><small>Download on the</small><b>App Store</b></span></a>
-          <a class="store" href="https://play.google.com/store/apps/details?id=com.abdel25.peerfit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.2.2-.3.6-.3 1v17.6c0 .4.1.8.3 1L13.5 12 3.6 2.2zm10.8 10.7 2.7 2.7-11.4 6.6 8.7-9.3zm3.9-3.8L20.8 10.5c.8.5.8 1.6 0 2.1l-2.5 1.4-3-3 3-1.9zM5.7 1.8l11.4 6.6-2.7 2.7-8.7-9.3z"/></svg><span><small>Get it on</small><b>Google Play</b></span></a>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/communities.webp" type="image/webp"><img src="screens/communities.jpg" alt="Communities list with members, points and city for each community" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Discover</div><h3>Find a community</h3><p>Browse communities near you or search by name. Each one shows its members, points and city.</p></div>
         </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/community.webp" type="image/webp"><img src="screens/community.jpg" alt="A hiking community page with members, points, events and a Create Community Event button" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Join</div><h3>Become a member</h3><p>Join in one tap, see upcoming events, and create events for the whole community.</p></div>
+        </div>
+        <div class="step">
+          <div class="phone"><picture><source srcset="screens/community-chat.webp" type="image/webp"><img src="screens/community-chat.jpg" alt="Community chat with messages and a poll for the next hiking destination" width="480" height="1000" loading="lazy"></picture></div>
+          <div><div class="step-num">Chat</div><h3>Plan together</h3><p>Chat with members and run polls, like where to hike next.</p></div>
+        </div>
+      </div>
+      <p class="note">Start your own community with the + button. Communities earn points and climb the leaderboard as they play.</p>
+      <div class="section-cta"><p>Find your crew today.</p><a class="btn" href="#" data-download><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a></div>
+    </div>
+  </section>
+
+  <section class="final" id="download">
+    <div class="wrap">
+      <div class="label">Connect · Play · Grow</div>
+      <h2>Find your <span class="accent">peer.</span></h2>
+      <p>Your next game is nearby. Download PeerFit free.</p>
+      <div class="stores">
+        <a class="store" href="https://apps.apple.com/us/app/peer-fit/id6754720762"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.59 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21z"/></svg><span><small>Download on the</small><b>App Store</b></span></a>
+        <a class="store" href="https://play.google.com/store/apps/details?id=com.abdel25.peerfit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.2.2-.3.6-.3 1v17.6c0 .4.1.8.3 1L13.5 12 3.6 2.2zm10.8 10.7 2.7 2.7-11.4 6.6 8.7-9.3zm3.9-3.8L20.8 10.5c.8.5.8 1.6 0 2.1l-2.5 1.4-3-3 3-1.9zM5.7 1.8l11.4 6.6-2.7 2.7-8.7-9.3z"/></svg><span><small>Get it on</small><b>Google Play</b></span></a>
       </div>
       <div class="qr" id="qr" hidden>
         <div class="qr-code" id="qr-code"></div>
-        Scan with your phone
+        <span>On a computer?<br>Scan with your phone camera<br>to get the app.</span>
       </div>
     </div>
   </section>
@@ -423,16 +500,17 @@
 
 <div class="dl-bar" id="dl-bar" aria-hidden="true">
   <div class="wrap">
-    <p>Plan less. Play more.</p>
-    <a class="btn btn-black" href="#" data-download tabindex="-1"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
+    <img src="logo.png" alt="" width="65" height="34">
+    <p>Free on iPhone and Android</p>
+    <a class="btn" href="#" data-download tabindex="-1"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>Download free</a>
   </div>
 </div>
 
 <footer>
   <div class="wrap">
-    <img src="logo.png" alt="PeerFit" width="65" height="34">
+    <img src="logo.png" alt="PeerFit" width="57" height="30">
     <div class="foot-links">
-      <a href="mailto:peerfit@peer-fit.com">peerfit@peer-fit.com</a>
+      <a href="mailto:peerfit@peer-fit.com">Support: peerfit@peer-fit.com</a>
       <a href="https://apps.apple.com/us/app/peer-fit/id6754720762">App Store</a>
       <a href="https://play.google.com/store/apps/details?id=com.abdel25.peerfit">Google Play</a>
     </div>
@@ -441,15 +519,14 @@
 </footer>
 
 <script>
-  document.documentElement.classList.replace("no-js", "js");
-  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // Phones go to the redirect page (right store). Computers go to the download section with a QR code.
+  // Phones go to the redirect page, which opens the right store.
+  // Computers go to the download section, which shows both stores and a QR code.
   const DOWNLOAD_URL = "https://www.peer-fit.com/app-redirect.html";
   const ua = navigator.userAgent || "";
   const isPhone = /android|iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
   document.querySelectorAll("[data-download]").forEach(a => { a.href = isPhone ? DOWNLOAD_URL : "#download"; });
 
+  // QR code for computers only, so phones don't download the library
   if (!isPhone) {
     const lib = document.createElement("script");
     lib.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
@@ -457,13 +534,11 @@
       const qr = qrcode(0, "M");
       qr.addData(DOWNLOAD_URL);
       qr.make();
-      document.getElementById("qr-code").innerHTML = qr.createImgTag(5, 0, "QR code to download PeerFit");
+      document.getElementById("qr-code").innerHTML = qr.createImgTag(4, 0, "QR code to download PeerFit");
       document.getElementById("qr").hidden = false;
     };
     document.body.appendChild(lib);
   }
-
-  // Download bar: after the hero, hidden again at the download section
   const bar = document.getElementById("dl-bar");
   let pastHero = false, atDownload = false;
   const update = () => {
@@ -475,16 +550,43 @@
   new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; update(); }).observe(document.querySelector(".hero"));
   new IntersectionObserver(([e]) => { atDownload = e.isIntersecting; update(); }).observe(document.getElementById("download"));
 
-  // The notification drops in when the "With PeerFit" panel is reached
-  const notif = document.querySelector(".notif");
-  if ("IntersectionObserver" in window && !reduceMotion && notif.getBoundingClientRect().top > innerHeight) {
-    notif.classList.add("pre");
-    new IntersectionObserver(([e], o) => {
-      if (e.isIntersecting) { setTimeout(() => notif.classList.remove("pre"), 300); o.disconnect(); }
-    }, { threshold: .6 }).observe(notif);
+  // Arrow keys move the screen strips one screen at a time (keyboard users can't swipe)
+  document.querySelectorAll(".steps").forEach(strip => {
+    strip.addEventListener("keydown", e => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      if (strip.scrollWidth <= strip.clientWidth) return;
+      e.preventDefault();
+      const step = strip.querySelector(".step").getBoundingClientRect().width + 20;
+      strip.scrollBy({ left: e.key === "ArrowRight" ? step : -step, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    });
+  });
+
+  document.documentElement.classList.replace("no-js", "js");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Scroll moments: only hide things that start below the fold, so nothing flashes
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    const below = el => el.getBoundingClientRect().top > innerHeight;
+    const notif = document.querySelector(".notif");
+    if (below(notif)) {
+      notif.classList.add("pre");
+      new IntersectionObserver(([e], o) => {
+        if (e.isIntersecting) { setTimeout(() => notif.classList.remove("pre"), 350); o.disconnect(); }
+      }, { threshold: .6 }).observe(notif);
+    }
+    document.querySelectorAll(".steps").forEach(strip => {
+      if (!below(strip)) return;
+      const steps = [...strip.querySelectorAll(".step")];
+      steps.forEach(st => st.classList.add("pre"));
+      new IntersectionObserver(([e], o) => {
+        if (!e.isIntersecting) return;
+        steps.forEach((st, i) => setTimeout(() => st.classList.remove("pre"), i * 50));
+        o.disconnect();
+      }, { threshold: .2 }).observe(strip);
+    });
   }
 
-  // Hero phone tilts toward the mouse (desktop)
+  // Hero phone tilts toward the mouse (desktop only)
   if (matchMedia("(hover: hover) and (pointer: fine)").matches && !reduceMotion) {
     const hero = document.querySelector(".hero"), phone = hero.querySelector(".phone");
     let frame = 0;
@@ -494,36 +596,32 @@
         const r = phone.getBoundingClientRect();
         const x = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (innerWidth / 2)));
         const y = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (innerHeight / 2)));
-        phone.style.setProperty("--ry", (x * 9).toFixed(2) + "deg");
-        phone.style.setProperty("--rx", (-y * 6).toFixed(2) + "deg");
+        phone.style.setProperty("--ry", (x * 10).toFixed(2) + "deg");
+        phone.style.setProperty("--rx", (-y * 8).toFixed(2) + "deg");
       });
     });
     hero.addEventListener("mouseleave", () => { phone.style.setProperty("--rx", "0deg"); phone.style.setProperty("--ry", "0deg"); });
   }
 
-  // Swipe strips: dots + arrow keys
+  // Position dots under each swipe strip
   document.querySelectorAll(".steps").forEach(strip => {
     const steps = [...strip.querySelectorAll(".step")];
-    const scrollToStep = st => strip.scrollTo({ left: st.offsetLeft - strip.offsetLeft, behavior: reduceMotion ? "auto" : "smooth" });
     const dots = document.createElement("div");
     dots.className = "dots";
     steps.forEach((st, i) => {
       const b = document.createElement("button");
       b.type = "button";
       b.setAttribute("aria-label", `Show screen ${i + 1} of ${steps.length}`);
-      b.addEventListener("click", () => scrollToStep(st));
+      b.addEventListener("click", () => strip.scrollTo({ left: st.offsetLeft - strip.offsetLeft, behavior: reduceMotion ? "auto" : "smooth" }));
       dots.appendChild(b);
     });
     strip.after(dots);
-    const current = () => Math.min(steps.length - 1, Math.round(strip.scrollLeft / (steps[0].getBoundingClientRect().width + 18)));
-    const mark = () => { const i = current(); dots.querySelectorAll("button").forEach((b, j) => b.setAttribute("aria-current", j === i ? "true" : "false")); };
+    const mark = () => {
+      const w = steps[0].getBoundingClientRect().width + 20;
+      const i = Math.min(steps.length - 1, Math.round(strip.scrollLeft / w));
+      dots.querySelectorAll("button").forEach((b, j) => b.setAttribute("aria-current", j === i ? "true" : "false"));
+    };
     strip.addEventListener("scroll", () => requestAnimationFrame(mark), { passive: true });
-    strip.addEventListener("keydown", e => {
-      if ((e.key !== "ArrowRight" && e.key !== "ArrowLeft") || strip.scrollWidth <= strip.clientWidth) return;
-      e.preventDefault();
-      const i = Math.max(0, Math.min(steps.length - 1, current() + (e.key === "ArrowRight" ? 1 : -1)));
-      scrollToStep(steps[i]);
-    });
     mark();
   });
 
