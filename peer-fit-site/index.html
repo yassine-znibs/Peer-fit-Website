@@ -126,7 +126,10 @@
   nav > a:first-child { display: flex; align-items: center; min-height: 48px; }
   nav img { height: 42px; width: auto; display: block; }
   .nav-links { display: flex; align-items: center; gap: 28px; font-size: 15px; color: var(--muted); }
+  .nav-links a:not(.btn) { position: relative; padding-block: 12px; }
+  .nav-links a:not(.btn)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 250ms var(--ease-out); }
   .nav-links a:not(.btn):hover { color: var(--text); }
+  .nav-links a:not(.btn):hover::after, .nav-links a:not(.btn):focus-visible::after { transform: scaleX(1); }
 
   /* Hero */
   .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
@@ -136,7 +139,7 @@
   .hero h1 { font-size: clamp(34px, 6vw, 80px); font-weight: 900; line-height: .98; margin: 18px 0 26px; }
   .hero p { color: var(--muted); font-size: clamp(17px, 2vw, 20px); max-width: 520px; margin-bottom: 34px; }
   .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-  .hero .phone { justify-self: center; max-width: 290px; transform: rotate(3deg); }
+  .hero .phone { justify-self: center; max-width: 290px; transform: perspective(900px) rotate(3deg) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
 
   /* Sports ticker */
   .ticker { border-bottom: 1px solid var(--line); overflow: hidden; padding-block: 18px; }
@@ -186,10 +189,31 @@
   .btn, .store, .dots button { transition: transform var(--dur-press) var(--ease-out), background .15s, color .15s, border-color .15s; }
   .btn:active, .store:active { transform: scale(.97); }
   .btn.big:active { transform: scale(.97); }
-  @media (hover: hover) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    /* Download arrow nudges down: "this downloads" */
+    .btn .ico { transition: transform 250ms var(--ease-out); }
+    .btn[data-download]:hover .ico { transform: translateY(3px); }
+    /* Store badges lift like a real button */
+    .store:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -14px var(--accent-glow-strong); }
+    .store .ico { transition: transform 250ms var(--ease-out); }
+    .store:hover .ico { transform: scale(1.12); }
+    /* App screens: phone lifts, screen zooms slightly inside the frame, step tag lights up */
     .step .phone { transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out); }
+    .step .phone img { transition: transform 500ms var(--ease-out); }
     .step:hover .phone { transform: translateY(-6px); box-shadow: 0 30px 60px -28px rgba(0,0,0,.5); }
+    .step:hover .phone img { transform: scale(1.04); }
+    .step-num { transition: background 200ms, color 200ms; }
+    .step:hover .step-num { background: var(--text); color: var(--bg); }
+    /* Hero phone follows the mouse a little */
+    .hero .phone { transition: transform 400ms var(--ease-out); }
+    /* Sports strip: the word under the mouse lights up while the strip pauses */
+    .ticker span { transition: color 200ms; }
+    .ticker span:hover { color: var(--accent); }
+    /* Notification responds when you look at it */
+    .notif { transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out), opacity 500ms var(--ease-out); }
+    .with:hover .notif:not(.pre) { transform: translateY(-4px); box-shadow: 0 24px 50px -24px rgba(0,0,0,.5); }
   }
+  .dots button:hover::before { border-color: var(--text); }
 
   /* Notification that shows what PeerFit does for organisers */
   .notif { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 16px 40px -24px rgba(0,0,0,.45); max-width: 420px; }
@@ -205,9 +229,9 @@
     .hero-grid > div > p:first-of-type { animation-delay: 160ms; }
     .hero .ctas { animation-delay: 240ms; }
     .hero-grid > div > p.free { animation-delay: 300ms; }
-    .hero .phone { animation: phone-in 900ms var(--ease-out) 250ms both; }
+    .hero .phone { animation: phone-in 900ms var(--ease-out) 250ms backwards; }
     @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
-    @keyframes phone-in { from { opacity: 0; transform: translateY(60px) rotate(0deg); } to { opacity: 1; transform: translateY(0) rotate(3deg); } }
+    @keyframes phone-in { from { opacity: 0; transform: translateY(60px) rotate(0deg); } to { opacity: 1; transform: perspective(900px) rotate(3deg) rotateX(0deg) rotateY(0deg); } }
 
     /* 2 & 3. Scroll moments, only for content that starts below the fold */
     .js .notif.pre { opacity: 0; transform: translateY(-14px) scale(.98); }
@@ -262,7 +286,8 @@
   .skip:focus { top: 12px; }
   .foot-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
   .foot-links a { text-decoration: underline; text-underline-offset: 3px; padding-block: 12px; }
-  .foot-links a:hover { color: var(--text); }
+  .foot-links a { text-decoration-color: var(--muted); transition: color .15s, text-decoration-color .15s; }
+  .foot-links a:hover { color: var(--text); text-decoration-color: var(--accent); }
   @media (max-width: 600px) { .qr { display: none; } }
   @media (max-width: 520px) {
     .ctas .btn { width: 100%; }
@@ -559,6 +584,23 @@
         o.disconnect();
       }, { threshold: .2 }).observe(strip);
     });
+  }
+
+  // Hero phone tilts toward the mouse (desktop only)
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches && !reduceMotion) {
+    const hero = document.querySelector(".hero"), phone = hero.querySelector(".phone");
+    let frame = 0;
+    hero.addEventListener("mousemove", e => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const r = phone.getBoundingClientRect();
+        const x = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (innerWidth / 2)));
+        const y = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (innerHeight / 2)));
+        phone.style.setProperty("--ry", (x * 10).toFixed(2) + "deg");
+        phone.style.setProperty("--rx", (-y * 8).toFixed(2) + "deg");
+      });
+    });
+    hero.addEventListener("mouseleave", () => { phone.style.setProperty("--rx", "0deg"); phone.style.setProperty("--ry", "0deg"); });
   }
 
   // Position dots under each swipe strip
